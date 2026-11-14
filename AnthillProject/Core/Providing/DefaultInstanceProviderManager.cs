@@ -6,30 +6,27 @@ public class DefaultInstanceProviderManager : IInstanceProviderManager{
     private readonly Dictionary<
         string, Dictionary<
             string, IInstanceProvider<
-                IProvidable,
-                IInstanceProviderArgs<IProvidable>
+                IProvidable
             >
         >
     >
     InstanceProviderRegistry;
-    public TInstance ProvideInstance<TInstance, TArgs>(string ID, TArgs Args)
-        where TInstance : IProvidable
-        where TArgs : IInstanceProviderArgs<TInstance> =>
-            (TInstance)InstanceProviderRegistry[typeof(TInstance).FullName][ID].ProvideInstance((IInstanceProviderArgs<IProvidable>)Args);
+    public TInstance ProvideInstance<TInstance>(string ID, object Args)
+        where TInstance : IProvidable =>
+            (TInstance)InstanceProviderRegistry[typeof(TInstance).FullName][ID].ProvideInstance((IInstanceProviderArgs)Args);
         
 
     //Who the fuck knows how this works.
-    public void RegisterInstanceProvider<TInstance, TArgs>(IInstanceProvider<TInstance, TArgs> InstanceProvider)
-        where TInstance : IProvidable
-        where TArgs : IInstanceProviderArgs<TInstance>{
+    public void RegisterInstanceProvider<TInstance>(IInstanceProvider<TInstance> InstanceProvider)
+        where TInstance : IProvidable{
             var InstanceTypeName = typeof(TInstance).FullName;
+            //Console.WriteLine(InstanceProvider.GetIdentifier());
 
         if (!InstanceProviderRegistry.ContainsKey(InstanceTypeName))
                 InstanceProviderRegistry.Add(InstanceTypeName,
                     new Dictionary<
                         string, IInstanceProvider<
-                            IProvidable,
-                            IInstanceProviderArgs<IProvidable>
+                            IProvidable
                         >
                     >()
                 );
@@ -38,14 +35,13 @@ public class DefaultInstanceProviderManager : IInstanceProviderManager{
                 InstanceProvider.GetIdentifier(),
                 (
                     IInstanceProvider<
-                        IProvidable,
-                        IInstanceProviderArgs<IProvidable>
+                        IProvidable
                     >
                 )InstanceProvider
             );
         }
     
     public DefaultInstanceProviderManager(){
-        InstanceProviderRegistry = new Dictionary<string, Dictionary<string, IInstanceProvider<IProvidable, IInstanceProviderArgs<IProvidable>>>>();
+        InstanceProviderRegistry = new Dictionary<string, Dictionary<string, IInstanceProvider<IProvidable>>>();
     }
 }

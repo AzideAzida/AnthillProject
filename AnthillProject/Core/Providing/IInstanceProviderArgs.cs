@@ -1,4 +1,4 @@
 namespace AnthillProject.Core.Providing;
-public interface IInstanceProviderArgs<TInstance>{
+public interface IInstanceProviderArgs{
     byte[] GetArbitraryData();
 }

@@ -13,9 +13,9 @@ public class UnknownTile : Tile{
     public UnknownTile(TileProviderArgs Args):base(Args){}
 
     public override string GetProviderIdentifier() => ProviderInstance.GetIdentifier();
-    internal static IInstanceProvider<Tile, TileProviderArgs> ProviderInstance = new Provider();
-    internal class Provider : IInstanceProvider<Tile, TileProviderArgs>{
-        public Tile ProvideInstance(TileProviderArgs Args) =>
-            new UnknownTile(Args);
+    internal static IInstanceProvider<Tile> ProviderInstance = new Provider();
+    internal class Provider : IInstanceProvider<Tile>{
+        public Tile ProvideInstance(object Args) =>
+            new UnknownTile((TileProviderArgs)Args);
     }
 }

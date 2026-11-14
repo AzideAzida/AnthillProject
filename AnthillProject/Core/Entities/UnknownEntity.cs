@@ -20,9 +20,9 @@ public class UnknownEntity : Entity{
     }
 
     public override string GetProviderIdentifier() => ProviderInstance.GetIdentifier();
-    internal static IInstanceProvider<Entity, EntityProviderArgs> ProviderInstance = new Provider();
-    internal class Provider : IInstanceProvider<Entity, EntityProviderArgs>{
-        public Entity ProvideInstance(EntityProviderArgs Args) =>
-            new UnknownEntity(Args);
+    internal static IInstanceProvider<Entity> ProviderInstance = new Provider();
+    internal class Provider : IInstanceProvider<Entity>{
+        public Entity ProvideInstance(object Args) =>
+            new UnknownEntity((EntityProviderArgs)Args);
     }
 }

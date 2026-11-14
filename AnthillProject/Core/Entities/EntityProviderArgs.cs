@@ -3,7 +3,7 @@ using AnthillProject.Core.Providing;
 
 namespace AnthillProject.Core.Entities;
 
-public readonly struct EntityProviderArgs : IInstanceProviderArgs<Entity>{
+public readonly struct EntityProviderArgs : IInstanceProviderArgs{
     public readonly Vector2 Position, Velocity;
     public readonly byte[] Arbitrary;
     public EntityProviderArgs(): this(new Vector2()){}

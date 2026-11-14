@@ -1,8 +1,7 @@
 namespace AnthillProject.Core.Providing;
 
-public interface IInstanceProvider<out TInstance, TArgs>
-    where TInstance : IProvidable
-    where TArgs : IInstanceProviderArgs<TInstance>{
+public interface IInstanceProvider<out TInstance>
+    where TInstance : IProvidable{
         string GetIdentifier(){
             var type = GetType();
             var full = type.FullName;
@@ -11,5 +10,5 @@ public interface IInstanceProvider<out TInstance, TArgs>
                 return type.Name;
             return full;
         }
-        TInstance ProvideInstance(TArgs Args);
+        TInstance ProvideInstance(object Args);
     }

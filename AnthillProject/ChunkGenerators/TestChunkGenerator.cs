@@ -21,9 +21,9 @@ public class TestChunkGenerator : IChunkGenerator{
                         (((x * chunk.SaveCoordinates.x) + (y * chunk.SaveCoordinates.y)) * 1024)
                     ).Next(0, 3) == 0
                 )
-                    chunk.SetTile(new Coordinates(x, y), Program.Instance.InstanceProviderManager.ProvideInstance<Tile, TileProviderArgs>(Grassland.ProviderInstance.GetIdentifier(), new TileProviderArgs()));
+                    chunk.SetTile(new Coordinates(x, y), Program.Instance.InstanceProviderManager.ProvideInstance<Tile>(Grassland.ProviderInstance.GetIdentifier(), new TileProviderArgs()));
                 else
-                    chunk.SetTile(new Coordinates(x, y), Program.Instance.InstanceProviderManager.ProvideInstance<Tile, TileProviderArgs>(Ocean    .ProviderInstance.GetIdentifier(), new TileProviderArgs()));
+                    chunk.SetTile(new Coordinates(x, y), Program.Instance.InstanceProviderManager.ProvideInstance<Tile>(Ocean    .ProviderInstance.GetIdentifier(), new TileProviderArgs()));
                 
         return chunk;
     }
