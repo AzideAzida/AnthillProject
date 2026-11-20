@@ -3,6 +3,8 @@ namespace AnthillProject.Core.Persistent;
 public class DefaultPersistentDataManager : IPersistentDataManager{
     public DefaultPersistentDataManager(string path = "./PersistentData"){
         DataPath = path;
+        if(!Directory.Exists(DataPath))
+            Directory.CreateDirectory(DataPath);
     }
     protected string GetFullPath(string path) =>
         Path.Combine(DataPath, path);
@@ -35,5 +37,9 @@ public class DefaultPersistentDataManager : IPersistentDataManager{
 
     public void WriteToFile(string path, byte[] fileContents) =>
         File.WriteAllBytes(GetFullPath(path), fileContents);
-    
+
+    public IEnumerable<string> EnumerateDirectories(string path) =>
+        Directory.EnumerateDirectories(GetFullPath(path));
+    public IEnumerable<string> EnumerateFiles(string path) =>
+        Directory.EnumerateFiles(GetFullPath(path));
 }

@@ -15,4 +15,7 @@ public interface IPersistentDataManager{
     void CreateDirectory(string path);
     void DeleteDirectory(string path);
     bool DirectoryExists(string path);
+
+    IEnumerable<string> EnumerateDirectories(string path);
+    IEnumerable<string> EnumerateFiles(string path);
 }

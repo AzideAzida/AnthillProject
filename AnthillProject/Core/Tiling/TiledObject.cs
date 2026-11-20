@@ -5,14 +5,18 @@ using AnthillProject.Core.Math;
 namespace AnthillProject.Core.Tiling;
 //X goes up when going to the right, and Y goes up when going up.
 public abstract class TiledObject<T> : ITiled<T>, ISimulable, IInitializable where T : notnull{
-    public abstract int GetMatrixSize();
-    public TiledObject(){
-        Tiles               = new T[GetMatrixSize(), GetMatrixSize()];
+    public readonly int SizeX;
+    public readonly int SizeY;
+    public TiledObject(int sx, int sy){
+        SizeX = sx;
+        SizeY = sy;
+
+        Tiles               = new T[SizeX, SizeY];
         Coords              = new Dictionary<T, Coordinates>();
         ListAllCoordinates  = new List      <Coordinates   >();
 
-        for(int y = 0; GetMatrixSize() > y; y++)//Y loop.
-            for(int x = 0; GetMatrixSize() > x; x++){//X loop.
+        for(int y = 0; SizeX > y; y++)//Y loop.
+            for(int x = 0; SizeY > x; x++){//X loop.
                 var tile = GetDefaultTile();
                 var coords = new Coordinates(x, y);
                 Tiles[x, y] = tile;
@@ -61,7 +65,7 @@ public abstract class TiledObject<T> : ITiled<T>, ISimulable, IInitializable whe
         get =>
             Tiles[x, y];
         set =>
-            this[new Coordinates(x, y)] = value;
+            Tiles[x, y] = value;
     }
     public T this[Coordinates i]{
         get =>

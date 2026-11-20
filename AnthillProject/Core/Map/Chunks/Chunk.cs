@@ -6,16 +6,15 @@ using AnthillProject.Core.Server;
 
 namespace AnthillProject.Core.Map.Chunks;
 public class Chunk : TiledObject<Tile>, IChunk{
-    //This defines both the height and horizontal length of a chunk.
-    public override int GetMatrixSize() => 8;
     public override Tile GetDefaultTile() =>
         new UnknownTile(new TileProviderArgs());
-    public int GetSizeX() => GetMatrixSize();
-    public int GetSizeY() => GetMatrixSize();
+    public int GetSizeX() => SizeX;
+    public int GetSizeY() => SizeY;
 
     public Coordinates GetCoordinates(Tile tile) => GetCoordinatesOfTile(tile);
 
-    public Chunk(){
+    public Chunk() : this(8, 8){}
+    public Chunk(int sx, int sy) : base(sx, sy){
         foreach(var i in GetAllCoordinates())
             this[i].Parent = this;
         Parent = Program.Instance.Server;
@@ -28,8 +27,8 @@ public class Chunk : TiledObject<Tile>, IChunk{
 
             //Checking if the entity has left the chunk.
             if(
-                    i.Position.x >= GetMatrixSize()
-                ||  i.Position.y >= GetMatrixSize()
+                    i.Position.x >= GetSizeX()
+                ||  i.Position.y >= GetSizeY()
                 ||  i.Position.y <  0
                 ||  i.Position.x <  0
             ) Parent.HandleEntityChunkTransition(i);
@@ -55,5 +54,4 @@ public class Chunk : TiledObject<Tile>, IChunk{
         this[coordinates] = tile;
         tile.Parent = this;
     }
-    
 }

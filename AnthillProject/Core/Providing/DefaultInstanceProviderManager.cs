@@ -13,8 +13,11 @@ public class DefaultInstanceProviderManager : IInstanceProviderManager{
     InstanceProviderRegistry;
     public TInstance ProvideInstance<TInstance>(string ID, object Args)
         where TInstance : IProvidable =>
-            (TInstance)InstanceProviderRegistry[typeof(TInstance).FullName][ID].ProvideInstance((IInstanceProviderArgs)Args);
+            GetInstanceProvider<TInstance>(ID).ProvideInstance((IInstanceProviderArgs)Args);
         
+    public IInstanceProvider<TInstance> GetInstanceProvider<TInstance>(string ID)
+        where TInstance : IProvidable =>
+            (IInstanceProvider<TInstance>)InstanceProviderRegistry[typeof(TInstance).FullName][ID];
 
     //Who the fuck knows how this works.
     public void RegisterInstanceProvider<TInstance>(IInstanceProvider<TInstance> InstanceProvider)

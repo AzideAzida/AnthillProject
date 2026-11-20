@@ -39,15 +39,11 @@ public class SingleplayerLocalServer : IServer{
         LoadedChunks = new Dictionary<Coordinates, IChunk>();
     }
 
-    public SingleplayerLocalServer(int Save)
-        : this(
-            Save,
-            new DefaultDiskSaveManager(new DefaultPersistentDataManager()),
-            new PlaceholderChunkGenerator()
-        ){}
-
     public async void Init(){
         Console.WriteLine("Server Init() has been called.");
+
+        //Giving the client a head start.
+        Thread.Sleep(2000);
 
         Program.Instance.CurrentEntity = new Player(new EntityProviderArgs()){Velocity = new Vector2(2), Position = new Vector2(1)};
 
@@ -71,7 +67,7 @@ public class SingleplayerLocalServer : IServer{
         //Make it so when the client closes the server stops executing and the thread stops.
         Program.Instance.Client.OnExit += () => ShouldSaveAndExit = true;
 
-        while(ContinueExecuting){//TODO: temp chunk loading
+        while(ContinueExecuting){
             long NextTick = GetMilliseconds() + MillisecondTickInterval;
             int GetDelay() => (int)MathF.Abs(GetMilliseconds() - NextTick);
 
@@ -80,14 +76,27 @@ public class SingleplayerLocalServer : IServer{
                 continue;
             }
 
-            foreach(var i in TempChunks){
-                i.Time--;
-                if(i.Time < 0)
-                    UnloadAndSaveChunk(i.chunk);
+            for(int i = 0; i < TempChunks.Count; i++){
+                try{
+                    var entry = TempChunks[i];
+                    entry.Time--;
+                    if(entry.Time < 0){
+                        UnloadAndSaveChunk(entry.chunk);
+                        TempChunks.Remove(entry);
+                    }
+                }
+                catch(IndexOutOfRangeException){}
             }
 
+            var loadedChunks = new List<IChunk>();
             foreach(var i in LoadedChunks)
-                i.Value.Simulate();
+                loadedChunks.Add(i.Value);
+                
+            for(int i = 0; i < loadedChunks.Count; i++){
+                var chunk = loadedChunks[i];
+                if(IsChunkLoaded(chunk.SaveCoordinates))
+                    chunk.Simulate();
+            }
             
             Program.Instance.Client.OnServerTick();
 
@@ -110,14 +119,14 @@ public class SingleplayerLocalServer : IServer{
     }
 
     public IChunk LoadChunk(Coordinates coordinates){
-        IChunk chunk;
-        if(SaveManager.ChunkExistsInSave(SaveID, coordinates))
-            chunk = SaveManager.GetChunkFromSave(SaveID, coordinates);
-        else{
+        var chunk = SaveManager.GetChunkFromSave(SaveID, coordinates);
+        
+        if(chunk == null){
             chunk = ChunkGenerator.Generate(new Chunk());
             chunk.SaveCoordinates = coordinates;
             SaveChunk(chunk);
         }
+        chunk.Parent = this;
         
         if(LoadedChunks.TryAdd(coordinates, chunk))
             return chunk;
@@ -162,6 +171,18 @@ public class SingleplayerLocalServer : IServer{
                 entity.CurrentChunk.SaveCoordinates +
                 entity.CurrentChunk.GetPossibleExitChunkRelativeCoordinates(entity.CurrentChunk.SaveCoordinates)
             );
+        var chunk = entity.CurrentChunk;
+        
+        var x = entity.Position.x;
+        var y = entity.Position.y;
+
+        /**/ if(entity.Position.x >= chunk.GetSizeX()) x = MathF.Abs(chunk.GetSizeX() - entity.Position.x);
+        else if(entity.Position.x <  0               ) x =           chunk.GetSizeX() + entity.Position.x ;
+
+        /**/ if(entity.Position.y >= chunk.GetSizeY()) y = MathF.Abs(chunk.GetSizeY() - entity.Position.y);
+        else if(entity.Position.y <  0               ) y =           chunk.GetSizeY() + entity.Position.y ;
+
+        entity.Position = new Vector2(x, y);
     }
 
     public IChunk LoadTempChunkForTicks(Coordinates coordinates, int ticks){

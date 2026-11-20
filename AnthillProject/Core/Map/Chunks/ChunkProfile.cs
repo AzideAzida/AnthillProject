@@ -5,6 +5,7 @@ using AnthillProject.Core.Math;
 using AnthillProject.Core.Map.Tiles;
 using AnthillProject.Core.Server;
 using System.Drawing;
+using AnthillProject.TileBehaviours;
 
 namespace AnthillProject.Core.Map.Chunks;
 
@@ -53,38 +54,42 @@ public readonly struct ChunkProfile : IChunk{
 
         for(int x = 0; x < GetSizeX(); x++)
             for(int y = 0; y < GetSizeY(); y++){
-                //This gets floored because some weird shit happens if you don't. Took me a week to figure that out...
-                //It also gets converted to a byte and then into an int so that the modulus operator doesn't do weird shit. Better not be trying to profile a very large area!
-                var TileCoordinateX = (int)(byte)MathF.Floor(TargetEntity.Position.x - xHalf + x);
-                var TileCoordinateY = (int)(byte)MathF.Floor(TargetEntity.Position.y - yHalf + y);
-                
-                var EntityChunk = TargetEntity.CurrentChunk;
-                var CurrentServer = EntityChunk.Parent;
-                var ChunkCoordinate = EntityChunk.SaveCoordinates +
-                    EntityChunk.GetPossibleExitChunkRelativeCoordinates(new Coordinates(TileCoordinateX, TileCoordinateY));
-                var CurrentChunk = CurrentServer.GetChunk(ChunkCoordinate);
+                try{
+                    //This gets floored because some weird shit happens if you don't. Took me a week to figure that out...
+                    var TileCoordinateX = (int)MathF.Floor(TargetEntity.Position.x - xHalf + x);
+                    var TileCoordinateY = (int)MathF.Floor(TargetEntity.Position.y - yHalf + y);
 
-                TileCoordinateX %= CurrentChunk.GetSizeX();
-                TileCoordinateY %= CurrentChunk.GetSizeY();
-                //Console.WriteLine($"{TileCoordinateX} {TileCoordinateY}");
+                    var EntityChunk = TargetEntity.CurrentChunk;
+                    var CurrentServer = EntityChunk.Parent;
+                    var ChunkCoordinate = EntityChunk.SaveCoordinates +
+                        EntityChunk.GetPossibleExitChunkRelativeCoordinates(new Coordinates(TileCoordinateX, TileCoordinateY));
+                    var CurrentChunk = CurrentServer.GetChunk(ChunkCoordinate);
 
-                Tiles[x, y] = CurrentChunk.GetTile(new Coordinates(TileCoordinateX, TileCoordinateY));
+                    TileCoordinateX = (byte)TileCoordinateX % CurrentChunk.GetSizeX();
+                    TileCoordinateY = (byte)TileCoordinateY % CurrentChunk.GetSizeY();
+                    //Console.WriteLine($"{TileCoordinateX} {TileCoordinateY}");
 
-                //Getting the entities. Kinda scuffed, but will do for now.
-                foreach(var i in CurrentChunk.LoadedEntities){
-                    if(
-                        MathF.Floor(i.Position.x) == TileCoordinateX &&
-                        MathF.Floor(i.Position.y) == TileCoordinateY
-                    )
-                    
-                    loadedEntities.Add(
-                        new DummyEntity(i,
-                            new Vector2(
-                                x + Utility.GetDecimals(i.Position.x),
-                                y + Utility.GetDecimals(i.Position.y)
-                            )
+                    Tiles[x, y] = CurrentChunk.GetTile(new Coordinates(TileCoordinateX, TileCoordinateY));
+
+                    //Getting the entities. Kinda scuffed, but will do for now.
+                    foreach(var i in CurrentChunk.LoadedEntities){
+                        if(
+                            MathF.Floor(i.Position.x) == TileCoordinateX &&
+                            MathF.Floor(i.Position.y) == TileCoordinateY
                         )
-                    );
+
+                        loadedEntities.Add(
+                            new DummyEntity(i,
+                                new Vector2(
+                                    x + Utility.GetDecimals(i.Position.x),
+                                    y + Utility.GetDecimals(i.Position.y)
+                                )
+                            )
+                        );
+                    }
+                }
+                catch{
+                    Tiles[x, y] = new Grassland(new TileProviderArgs());
                 }
             }
         

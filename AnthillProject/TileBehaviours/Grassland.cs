@@ -18,7 +18,7 @@ public class Grassland : Tile{
 
     public override string GetProviderIdentifier() => ProviderInstance.GetIdentifier();
     internal static IInstanceProvider<Tile> ProviderInstance = new Provider();
-    internal class Provider : IInstanceProvider<Tile>{
+    private sealed class Provider : IInstanceProvider<Tile>{
         public Tile ProvideInstance(object Args) =>
             new Grassland((TileProviderArgs)Args);
     }

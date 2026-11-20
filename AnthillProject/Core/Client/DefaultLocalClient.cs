@@ -23,8 +23,14 @@ public class DefaultLocalClient : IClient{
 
             //If rendering is too slow, the UI thread won't be able to keep up with the server thread and rendering tasks will build up. Too bad!
             App.InvokeAsync(delegate{
-                Img.Image = Utility.SystemImageToEtoBitmap(Renderer.GetRenderedBitmap());
-
+                try{
+                    Img.Image = Utility.SystemImageToEtoBitmap(Renderer.GetRenderedBitmap());
+                }
+                catch(Exception ex){
+                    Console.WriteLine("Exception ocurred in rendering.");
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                }
                 #if DoBasicRenderReporting
                     Console.WriteLine("end");
                 #endif
@@ -51,7 +57,7 @@ public class DefaultLocalClient : IClient{
         public void OnKeyDown(EventHandler<KeyEventArgs> i){
             form.KeyDown += i;
         }
-        public void OnMouseDown(EventHandler<MouseEventArgs> i){
+        public void OnMouseDown(EventHandler<MouseEventArgs> i){//TODO: Fix this. It don't work.
             form.MouseDown += i;
         }
         public void PlayAudioFromIWaveProvider(IWaveProvider i){

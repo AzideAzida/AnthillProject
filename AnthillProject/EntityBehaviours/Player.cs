@@ -18,18 +18,33 @@ public class Player : Entity{
         Utility.ArgbBitmap1x1(0, 0, 0);
 
     public override void Simulate(){
-        //entity.Position -= new Vector2(0.01f);
+        base.Simulate();
+        //Console.WriteLine();
+        
+        void Load(Coordinates c){
+            if(CurrentChunk != null && !CurrentChunk.Parent.IsChunkLoaded(c))
+                CurrentChunk.Parent.LoadTempChunkForTicks(
+                    new Coordinates(
+                        CurrentChunk.SaveCoordinates.x,
+                        CurrentChunk.SaveCoordinates.y
+                    ) + c, 200);
+        }
+
+        //I'm sorry.
+        Load(new Coordinates(-1, 1)); Load(new Coordinates(0, 1)); Load(new Coordinates(1, 1));
+        Load(new Coordinates(-1, 0)); Load(new Coordinates(0, 0)); Load(new Coordinates(1, 0));
+        Load(new Coordinates(-1,-1)); Load(new Coordinates(0,-1)); Load(new Coordinates(1,-1));
     }
     public override void Init(){
         Program.Instance.Client.OnMouseDown((i, keys) => {
             if(keys.Buttons == MouseButtons.Primary     ) Velocity += new Vector2(0, Speed);
-            if(keys.Buttons == MouseButtons.Alternate   ) Velocity += new Vector2(Speed, 0);
+            if(keys.Buttons == MouseButtons.Alternate   ) Velocity -= new Vector2(0, Speed);
         });
     }
 
     public override string GetProviderIdentifier() => ProviderInstance.GetIdentifier();
     internal static IInstanceProvider<Entity> ProviderInstance = new Provider();
-    internal class Provider : IInstanceProvider<Entity>{
+    private sealed class Provider : IInstanceProvider<Entity>{
         public Entity ProvideInstance(object Args) =>
             new UnknownEntity((EntityProviderArgs)Args);
     }

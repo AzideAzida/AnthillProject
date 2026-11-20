@@ -10,6 +10,7 @@ public interface IChunk : ISimulable, IParented<IServer>{
     int GetSizeX();
     int GetSizeY();
     
+    //First tile is is 0, 0.
     Tile GetTile(Coordinates coordinates);
     void SetTile(Coordinates coordinates, Tile tile);
     Coordinates GetCoordinates(Tile tile);

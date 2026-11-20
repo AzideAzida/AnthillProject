@@ -13,15 +13,15 @@ public class UnknownEntity : Entity{
         Core.Utility.ArgbBitmap1x1(255, 0, 255);
 
     public override void Simulate(){
-        
+        base.Simulate();
     }
     public override void Init(){
-        
+        base.Init();
     }
 
     public override string GetProviderIdentifier() => ProviderInstance.GetIdentifier();
     internal static IInstanceProvider<Entity> ProviderInstance = new Provider();
-    internal class Provider : IInstanceProvider<Entity>{
+    private sealed class Provider : IInstanceProvider<Entity>{
         public Entity ProvideInstance(object Args) =>
             new UnknownEntity((EntityProviderArgs)Args);
     }
