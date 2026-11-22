@@ -1,7 +1,7 @@
 using System.Collections;
 
 namespace AnthillProject.Core.Collections;
-public sealed class CompressedList<T> : IEnumerable<CompressedList<T>.Entry>{
+public sealed class CompressedList<T> : IList<CompressedList<T>.Entry>{
     public readonly struct Entry{
         public readonly T? Val;
         public readonly int Size;
@@ -11,6 +11,18 @@ public sealed class CompressedList<T> : IEnumerable<CompressedList<T>.Entry>{
         }
     }
     private readonly List<Entry> Entries;
+
+    public int Count =>
+        Entries.Count;
+
+    public bool IsReadOnly =>
+        false;
+
+    public Entry this[int index]{
+        get => Entries[index];
+        set => Entries[index] = value;
+    }
+
     private static bool ValsEqual(T? i1, T? i2){
         if(i1 is null)
             return i2 is null;
@@ -36,6 +48,30 @@ public sealed class CompressedList<T> : IEnumerable<CompressedList<T>.Entry>{
     IEnumerator IEnumerable.GetEnumerator() =>
         GetEnumerator();
 
+    public int IndexOf(Entry item) =>
+        Entries.IndexOf(item);
+
+    public void Insert(int index, Entry item) =>
+        Entries.Insert(index, item);
+
+    public void RemoveAt(int index) =>
+        Entries.RemoveAt(index);
+
+    public void Add(Entry item) =>
+        Entries.Add(item);
+
+    public void Clear() =>
+        Entries.Clear();
+
+    public bool Contains(Entry item) =>
+        Entries.Contains(item);
+
+    public void CopyTo(Entry[] array, int arrayIndex) =>
+        Entries.CopyTo(array, arrayIndex);
+
+    public bool Remove(Entry item) =>
+        Entries.Remove(item);
+
     //Keep in mind that this disposes the enumerator.
     public CompressedList(IEnumerator<T> Input){
         var entries = new List<Entry>();
@@ -58,6 +94,16 @@ public sealed class CompressedList<T> : IEnumerable<CompressedList<T>.Entry>{
         }
         SaveEntries();
         Entries = entries;
+
+        Input.Dispose();
+    }
+
+    //Keep in mind that this disposes the enumerator.
+    public CompressedList(IEnumerator<Entry> Input){
+        Entries = new List<Entry>();
+        
+        while(Input.MoveNext())
+            Entries.Add(Input.Current);
 
         Input.Dispose();
     }
