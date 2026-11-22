@@ -27,10 +27,6 @@ public sealed class Program{
     [STAThread]
     private static void Main() => new Program();
     public Program(){
-        var sdf = new List<int>().GetEnumerator();
-        sdf.Dispose();
-        sdf.MoveNext();
-
         if(Instance == null)
             Instance = this;
         else
