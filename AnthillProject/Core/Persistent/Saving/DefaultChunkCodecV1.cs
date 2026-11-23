@@ -3,61 +3,116 @@ using AnthillProject.Core.Providing;
 using AnthillProject.Core.Math;
 using AnthillProject.Core.Collections;
 using AnthillProject.Core.Map.Tiles;
+using AnthillProject.Core.Entities;
 using static AnthillProject.Core.Utility;
 using System.Text;
 
 namespace AnthillProject.Core.Persistent.Saving;
 
 public class DefaultChunkCodecV1 : IChunkCodec{
-    private readonly struct TileEntry{
-        public readonly string Provider;
-        public readonly byte[] Data;
-        public TileEntry(string prov, byte[] data){
-            Provider = prov;
-            Data = data;
-        }
-    }
-
-    public IChunk Decode(byte[] bytes){//TODO: Finish this.
+    public IChunk Decode(byte[] bytes){//TODO: Stress-test this under harsher conditions to prove it's good enough.
         int GetIntAtPosition(int i) => IntFromBytesBE([bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]]);
         ushort GetUShortAtPosition(int i) => UShortFromBytesBE([bytes[i], bytes[i + 1]]);
+        float GetFloatAtPosition(int i) => FloatFromBytesBE([bytes[i], bytes[i + 1]]);
+        Vector2 GetVector2AtPosition(int i) => new Vector2(GetFloatAtPosition(i), GetFloatAtPosition(i + 4));
 
         int pos = 8;
         byte[][] GetPallete(){
             var Forming = new List<byte[]>();
-            var TotalSize = GetIntAtPosition(pos);
-            for(pos += 4; pos < TotalSize;){
-                var EntrySize = GetUShortAtPosition(pos);
+            var TotalFinalPos = GetIntAtPosition(pos) + pos + 4;
+            pos += 4;
+            //Console.WriteLine($"{pos}: {TotalFinalPos}");
+            while(pos < TotalFinalPos){
+                var EntryFinalPos = GetUShortAtPosition(pos) + pos + 2;
                 var EntryForming = new List<byte>();
-                for(pos += 2; pos < EntrySize; pos++)
+                for(pos += 2; pos < EntryFinalPos; pos++){
+                    //Console.WriteLine(pos);
                     EntryForming.Add(bytes[pos]);
+                }
                 Forming.Add(EntryForming.ToArray());
             }
             return Forming.ToArray();
         }
-        //Getting chunk size & creating chunk.
-        IChunk chunk = new Chunk(
-            GetIntAtPosition(0),
-            GetIntAtPosition(4)
+        var ChunkSizeX = GetIntAtPosition(0);
+        var ChunkSizeY = GetIntAtPosition(4);
+
+        var chunk = new Chunk(
+            ChunkSizeX,
+            ChunkSizeY
         );
-        var ProviderPallete = new List<IInstanceProvider<Tile>>();
+
+        T[,] GetMapRegion<T>(IList<T> pallete){
+            var matrix = new T[ChunkSizeX, ChunkSizeY];
+            //Console.WriteLine($":{pallete.Count}");
+            IEnumerator<CompressedList<T>.Entry> Enumerator(){
+                var FinalPos = GetIntAtPosition(pos) + pos + 4;
+                //Console.WriteLine($"Final: {FinalPos} Current: {pos}");
+                for(pos += 4; pos < FinalPos; pos += 4){
+                    //Console.WriteLine(GetUShortAtPosition(pos));
+                    yield return new CompressedList<T>.Entry(
+                        pallete[GetUShortAtPosition(pos + 2)],
+                        GetUShortAtPosition(pos)
+                    );
+                }
+            }
+            var count = 0;
+            var compressed = new CompressedList<T>(Enumerator());
+            //Console.WriteLine($"Compressed count: {compressed.Count}");
+            //foreach(var i in compressed)
+            //    Console.WriteLine($"{i.Size}, {i.Val}");
+
+            var Decompressed = compressed.Decompress();
+            //Console.WriteLine($"Decompressed count: {Decompressed.Count}");
+            for(int x = 0; x < ChunkSizeX; x++)
+                for(int y = 0; y < ChunkSizeY; y++){
+                    //Console.WriteLine(count);
+#pragma warning disable CS8601 // Possible null reference assignment.
+                    matrix[x, y] = Decompressed[count];
+#pragma warning restore CS8601 // Possible null reference assignment.
+                    count++;
+                }
+            return matrix;
+        }
+        var TileProviderPallete = new List<IInstanceProvider<Tile>>();
         foreach(var i in GetPallete())
-            ProviderPallete.Add(Program.Instance.InstanceProviderManager.GetInstanceProvider<Tile>(Encoding.ASCII.GetString(i)));
+            TileProviderPallete.Add(Program.Instance.InstanceProviderManager.GetInstanceProvider<Tile>(Encoding.ASCII.GetString(i)));
+
+        var EntityProviderPallete = new List<IInstanceProvider<Entity>>();
+        foreach(var i in GetPallete())
+            EntityProviderPallete.Add(Program.Instance.InstanceProviderManager.GetInstanceProvider<Entity>(Encoding.ASCII.GetString(i)));
+
         var DataPallete = GetPallete();
 
-        var ProviderTileEntries = new List<CompressedList<IInstanceProvider<Tile>>.Entry>(0);
+        var TileProviders = GetMapRegion(TileProviderPallete);
+        var TileData = GetMapRegion(DataPallete);
 
-        var TotalSize = GetIntAtPosition(pos);
+        for(int x = 0; x < ChunkSizeX; x++)
+            for(int y = 0; y < ChunkSizeY; y++)
+                chunk.SetTile(
+                    new Coordinates(x, y),
+                    TileProviders[x, y].ProvideInstance(new TileProviderArgs(TileData[x, y]))
+                );
         
-        for(pos += 4; pos < TotalSize; pos += 4){
-            ProviderTileEntries.Add(
-                new CompressedList<IInstanceProvider<Tile>>.Entry(
-                    ProviderPallete[GetUShortAtPosition(pos)],
-                    GetUShortAtPosition(pos + 2)
-                )
-            );
+        var EntityRegionSize = GetIntAtPosition(pos);
+        pos += 4;
+        while(pos < EntityRegionSize){
+            var entitypos = GetVector2AtPosition(pos);
+            pos += 8;
+
+            var vel = GetVector2AtPosition(pos);
+            pos += 8;
+
+            var prov = EntityProviderPallete[GetUShortAtPosition(pos)];
+            pos += 2;
+
+            chunk.SummonEntity(prov.ProvideInstance(new EntityProviderArgs(
+                entitypos,
+                vel,
+                DataPallete[GetUShortAtPosition(pos)]
+            )));
+
+            pos += 2;
         }
-        new CompressedList<IInstanceProvider<Tile>>(ProviderTileEntries).Decompress();
 
         return chunk;
     }
@@ -79,7 +134,9 @@ public class DefaultChunkCodecV1 : IChunkCodec{
         current.AddRange(GetBytesBE(ChunkSizeX));
         current.AddRange(GetBytesBE(ChunkSizeY));
 
-        var ProviderPallete = new Dictionary<string, ushort>();
+        var TileProviderPallete = new Dictionary<string, ushort>();
+        var EntityProviderPallete = new Dictionary<string, ushort>();
+        
         var DataPallete = new Dictionary<byte[], ushort>();
 
         var TileProviders = new List<string>();
@@ -87,20 +144,20 @@ public class DefaultChunkCodecV1 : IChunkCodec{
 
         DataPallete.Add([], 0);
         //Creating the provider pallete and arbitrary data pallete for tiles, as well as all data associated with tiles.
-        for(int x = 0; x < ChunkSizeX; x++){
+        for(int x = 0; x < ChunkSizeX; x++)
             for(int y = 0; y < ChunkSizeY; y++){
                 var tile = chunk.GetTile(new Coordinates(x, y));
                 var data = tile.ArbitraryData;
                 var id = tile.GetProviderIdentifier();
                 TileProviders.Add(id);
                 TileArbitraryDatas.Add(data);
-                if(!ProviderPallete.ContainsKey(id))
-                    ProviderPallete.Add(id, (ushort)ProviderPallete.Count);
+                if(!TileProviderPallete.ContainsKey(id))
+                    TileProviderPallete.Add(id, (ushort)TileProviderPallete.Count);
                 if(!DataPallete.ContainsKey(data))
                     DataPallete.Add(data, (ushort)DataPallete.Count);
                 
             }
-        }
+        
 
         var entities = chunk.LoadedEntities;
 
@@ -108,16 +165,22 @@ public class DefaultChunkCodecV1 : IChunkCodec{
         foreach(var i in entities){
             var data = i.ArbitraryData;
             var id = i.GetProviderIdentifier();
-            TileProviders.Add(id);
-            TileArbitraryDatas.Add(data);
-            if(!ProviderPallete.ContainsKey(id))
-                ProviderPallete.Add(id, (ushort)ProviderPallete.Count);
+            if(!EntityProviderPallete.ContainsKey(id))
+                EntityProviderPallete.Add(id, (ushort)EntityProviderPallete.Count);
             if(!DataPallete.ContainsKey(data))
                 DataPallete.Add(data, (ushort)DataPallete.Count);
         }
 
-        //Writing the provider pallete.
-        foreach(var i in ProviderPallete){
+        //Writing the tile provider pallete.
+        foreach(var i in TileProviderPallete){
+            var idEncoded = Encoding.ASCII.GetBytes(i.Key);
+            temp1.AddRange(GetBytesBE((ushort)idEncoded.Length));
+            temp1.AddRange(idEncoded);
+        }
+        ProcessTemp(temp1);
+
+        //Writing the entity provider pallete.
+        foreach(var i in EntityProviderPallete){
             var idEncoded = Encoding.ASCII.GetBytes(i.Key);
             temp1.AddRange(GetBytesBE((ushort)idEncoded.Length));
             temp1.AddRange(idEncoded);
@@ -135,7 +198,7 @@ public class DefaultChunkCodecV1 : IChunkCodec{
         foreach(var i in new CompressedList<string>(TileProviders).GetEntries()){
             if(i.Val == null) continue;
             temp1.AddRange(GetBytesBE((ushort)i.Size));
-            temp1.AddRange(GetBytesBE(ProviderPallete[i.Val]));
+            temp1.AddRange(GetBytesBE(TileProviderPallete[i.Val]));
         }
         ProcessTemp(temp1);
 
@@ -157,8 +220,8 @@ public class DefaultChunkCodecV1 : IChunkCodec{
             temp1.AddRange(GetBytesBE(i.Velocity.x));
             temp1.AddRange(GetBytesBE(i.Velocity.y));
 
-            //Arbitrary data and provider. Both are pallete entries.
-            temp1.AddRange(GetBytesBE(ProviderPallete[i.GetProviderIdentifier()]));
+            //Provider and arbitrary data. Both are pallete entries.
+            temp1.AddRange(GetBytesBE(EntityProviderPallete[i.GetProviderIdentifier()]));
             temp1.AddRange(GetBytesBE(DataPallete[i.ArbitraryData]));
         }
         ProcessTemp(temp1);
