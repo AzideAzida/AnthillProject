@@ -5,6 +5,7 @@ using AnthillProject.Core.Map.Chunks;
 using AnthillProject.Core.Math;
 
 namespace AnthillProject.Core.Client;
+//TODO: This doesn't work on Linux yet! Currently my number 1 priority to change that.
 public class DefaultRenderer : IRenderer{
     protected virtual Bitmap GetTileTexture(Tile tile) =>
         Utility.ResizeImage(

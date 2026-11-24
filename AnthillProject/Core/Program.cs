@@ -33,7 +33,8 @@ public sealed class Program{
             throw new InvalidOperationException("Cannot instantiate Program because it's instance isn't null!");
         
         //Deletes all persistent data. This is only temporary until I work all the kinks out of the persistence system.
-        Directory.Delete("./PersistentData", true);
+        if(Directory.Exists("./PersistentData"))
+            Directory.Delete("./PersistentData", true);
 
         InstanceProviderManager = new DefaultInstanceProviderManager();
         Client = new DefaultLocalClient();

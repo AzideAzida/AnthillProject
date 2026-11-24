@@ -37,7 +37,13 @@ public class DefaultLocalClient : IClient{
             });
         }
         public void Init(){
-            App = new Application(Eto.Platforms.Wpf);
+            App = new Application(Eto.Platforms.
+                #if WINDOWS
+                    Wpf
+                #else
+                    Gtk
+                #endif
+            );
 
             Renderer.Init();
             Img = new ImageView();
@@ -61,9 +67,11 @@ public class DefaultLocalClient : IClient{
             form.MouseDown += i;
         }
         public void PlayAudioFromIWaveProvider(IWaveProvider i){
-            var player = new WasapiPlayerBuilder().Build();
-            player.Init(i);
-            player.Play();
+            #if WINDOWS
+                var player = new WasapiPlayerBuilder().Build();
+                player.Init(i);
+                player.Play();
+            #endif
         }
     #endregion
 

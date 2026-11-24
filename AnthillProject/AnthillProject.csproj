@@ -1,15 +1,30 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<!-- -->
+<!--The empty comment above is to copy-paste it without having to manually type that sad imitation of a comment.-->
+<Project Sdk="Microsoft.NET.Sdk">
   <!--If you're looking for the Program.cs, it's in the Core directory.-->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <!--The condition is to stop the compiler from whining that we're importing Wpf without being in windows.-->
+    <TargetFramework Condition="$([MSBuild]::IsOsPlatform('Windows'))">net10.0-windows</TargetFramework>
+    <TargetFramework Condition="$([MSBuild]::IsOsPlatform('Linux'))"  >net10.0</TargetFramework>
+
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <!--Multi-platform package references:-->
   <ItemGroup>
     <PackageReference Include="NAudio" Version="3.1.0" />
-    <PackageReference Include="Eto.Platform.Wpf" Version="2.11.0" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
+  </ItemGroup>
+
+  <!--Windows exclusive package references:-->
+  <ItemGroup Condition="$([MSBuild]::IsOsPlatform('Windows'))">
+    <PackageReference Include="Eto.Platform.Wpf" Version="2.11.0" />
+  </ItemGroup>
+
+  <!--Linux exclusive package references:-->
+  <ItemGroup Condition="$([MSBuild]::IsOsPlatform('Linux'))">
+    <PackageReference Include="Eto.Platform.Gtk" Version="2.11.0" />
   </ItemGroup>
 </Project>
