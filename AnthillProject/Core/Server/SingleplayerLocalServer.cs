@@ -42,9 +42,6 @@ public class SingleplayerLocalServer : IServer{
     public async void Init(){
         Console.WriteLine("Server Init() has been called.");
 
-        //Giving the client a head start.
-        Thread.Sleep(2000);
-
         Program.Instance.CurrentEntity = new Player(new EntityProviderArgs()){Velocity = new Vector2(2), Position = new Vector2(1)};
 
         var CurrentChunk = LoadChunk(new Coordinates(0, 0));
@@ -97,9 +94,6 @@ public class SingleplayerLocalServer : IServer{
                 if(IsChunkLoaded(chunk.SaveCoordinates))
                     chunk.Simulate();
             }
-            
-            Program.Instance.Client.OnServerTick();
-
 
             #if true
                 await Task.Delay(GetDelay());

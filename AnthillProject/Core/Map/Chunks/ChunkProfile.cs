@@ -4,7 +4,7 @@ using AnthillProject.Core.Entities;
 using AnthillProject.Core.Math;
 using AnthillProject.Core.Map.Tiles;
 using AnthillProject.Core.Server;
-using System.Drawing;
+using SkiaSharp;
 using AnthillProject.TileBehaviours;
 
 namespace AnthillProject.Core.Map.Chunks;
@@ -15,7 +15,7 @@ public readonly struct ChunkProfile : IChunk{
         public override Vector2 GetSize() => 
             Source.GetSize();
 
-        public override Image GetTexture() =>
+        public override SKBitmap GetTexture() =>
             Source.GetTexture();
         public override string GetProviderIdentifier() =>
             Source.GetProviderIdentifier();

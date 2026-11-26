@@ -1,24 +1,26 @@
-using System.Drawing;
+using SkiaSharp;
 using AnthillProject.Core.Math;
 using AnthillProject.Core.Entities;
-using Eto.Forms;
 using AnthillProject.Core;
 using AnthillProject.Core.Providing;
+using Silk.NET.Input;
 
 namespace AnthillProject.EntityBehaviours;
 public class Player : Entity{
-    public const float Speed = 1;
+    public const float Speed = 0.1f;
 
     public Player(EntityProviderArgs i) : base(i){}
 
     public override Vector2 GetSize() =>
         new Vector2(0.25f);
 
-    public override Image GetTexture() =>
+    public override SKBitmap GetTexture() =>
         Utility.ArgbBitmap1x1(0, 0, 0);
 
     public override void Simulate(){
         base.Simulate();
+
+        //Velocity = new Vector2(0.1f);
         //Console.WriteLine();
         
         void Load(Coordinates c){
@@ -35,12 +37,7 @@ public class Player : Entity{
         Load(new Coordinates(-1, 0)); Load(new Coordinates(0, 0)); Load(new Coordinates(1, 0));
         Load(new Coordinates(-1,-1)); Load(new Coordinates(0,-1)); Load(new Coordinates(1,-1));
     }
-    public override void Init(){
-        Program.Instance.Client.OnMouseDown((i, keys) => {
-            if(keys.Buttons == MouseButtons.Primary     ) Velocity += new Vector2(0, Speed);
-            if(keys.Buttons == MouseButtons.Alternate   ) Velocity -= new Vector2(0, Speed);
-        });
-    }
+    public override void Init(){}
 
     public override string GetProviderIdentifier() => ProviderInstance.GetIdentifier();
     internal static IInstanceProvider<Entity> ProviderInstance = new Provider();

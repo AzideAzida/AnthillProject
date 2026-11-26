@@ -1,10 +1,10 @@
-using System.Drawing;
+using SkiaSharp;
 using AnthillProject.Core.Map.Tiles;
 using AnthillProject.Core.Providing;
 namespace AnthillProject.TileBehaviours;
 
 public class Ocean : Tile{
-    public override Bitmap GetTexture() =>
+    public override SKBitmap GetTexture() =>
         Core.Utility.ArgbBitmap1x1(0, 0, 255);
     public override void Simulate(){
         base.Simulate();

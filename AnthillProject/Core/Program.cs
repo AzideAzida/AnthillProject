@@ -37,7 +37,7 @@ public sealed class Program{
             Directory.Delete("./PersistentData", true);
 
         InstanceProviderManager = new DefaultInstanceProviderManager();
-        Client = new DefaultLocalClient();
+        Client = new SilkDotNetLocalClient();
 
         InstanceProviderManager.RegisterInstanceProvider(UnknownTile                .ProviderInstance);
         InstanceProviderManager.RegisterInstanceProvider(Ocean                      .ProviderInstance);

@@ -1,4 +1,4 @@
-using System.Drawing;
+using SkiaSharp;
 using AnthillProject.Core.Math;
 using AnthillProject.Core.Providing;
 
@@ -9,7 +9,7 @@ public class UnknownEntity : Entity{
     public override Vector2 GetSize() =>
         new Vector2(0.5f, 0.5f);
 
-    public override Bitmap GetTexture() =>
+    public override SKBitmap GetTexture() =>
         Core.Utility.ArgbBitmap1x1(255, 0, 255);
 
     public override void Simulate(){

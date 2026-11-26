@@ -1,6 +1,6 @@
-using System.Drawing;
+using SkiaSharp;
 
 namespace AnthillProject.Core.Interfaces;
 public interface ITextured{
-    Image GetTexture();
+    SKBitmap GetTexture();
 }

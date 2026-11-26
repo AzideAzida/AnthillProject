@@ -1,8 +1,6 @@
 #pragma warning disable CS8600
 
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
+using SkiaSharp;
 using AnthillProject.Core.Persistent.Saving;
 
 namespace AnthillProject.Core;
@@ -63,42 +61,33 @@ public static class Utility{
     public static float GetDecimals(float i) =>
         i % 1;
 
-    public static Bitmap ResizeImage(Image image, int width, int height){ //https://stackoverflow.com/a/24199315
-        var destRect = new Rectangle(0, 0, width, height);
-        var destImage = new Bitmap(width, height);
-
-        destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-        using(var graphics = Graphics.FromImage(destImage)){
-            graphics.CompositingMode = CompositingMode.SourceCopy;
-            graphics.CompositingQuality = CompositingQuality.HighQuality;
-            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-            using(var wrapMode = new ImageAttributes()){
-                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                graphics.DrawImage(image, destRect, 0, 0, image.Width,image.Height, GraphicsUnit.Pixel, wrapMode);
-            }
-        }
-
-        return destImage;
-    }
+    public static SKBitmap ResizeImage(SKBitmap image, int width, int height) =>
+        image.Resize(new SKImageInfo(width, height), SKSamplingOptions.Default);
     
-    public static Bitmap ArgbBitmap1x1(int red, int green, int blue, int alpha = 255) =>
-        ColorBitmap1x1(Color.FromArgb(alpha, red, green, blue));
-    public static Bitmap ColorBitmap1x1(Color i){
-        var Bmp = new Bitmap(1, 1);
+    
+    public static SKBitmap ArgbBitmap1x1(byte red, byte green, byte blue, byte alpha = 255) =>
+        ColorBitmap1x1(new SKColor(red, green, blue, alpha));
+    public static SKBitmap ColorBitmap1x1(SKColor i){
+        var Bmp = new SKBitmap(1, 1);
         Bmp.SetPixel(0, 0, i);
         return Bmp;
     }
-    public static Eto.Drawing.Bitmap SystemImageToEtoBitmap(Image img){
-        return new Eto.Drawing.Bitmap(
-            (byte[])new ImageConverter().ConvertTo(img, typeof(byte[]))
-        );
+
+    //If the provided object is null or doesn't implement IDisposable, does nothing and returns false.
+    //Otherwise, it disposes it and returns true.
+    public static bool TryDispose(object? obj){
+        if(obj == null)
+            return false;
+
+        if(obj is IDisposable disposable){
+            disposable.Dispose();
+            return true;
+        }
+        return false;
     }
+    
     internal static void TestSpeed(){
-        //var image = System.Drawing.Image.FromFile(@"");
+        //var image = SkiaSharp.Image.FromFile(@"");
         //Console.WriteLine(GetMilliseconds());
         //for(int i = 0; i < 60; i++){
         //    Utility.SystemImageToEtoBitmap(image);
