@@ -129,7 +129,6 @@ public class SilkDotNetLocalClient : IClient{
             GlfwWindowing.Use();
             window = Window.Create(options);
             window.Load += () => {
-                Console.WriteLine("asdfghjkl");
                 IInputContext input = window.CreateInput();
                 
                 foreach(var i in input.Keyboards){
