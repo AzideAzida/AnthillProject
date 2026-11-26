@@ -2,7 +2,7 @@
 
 AnthillProject is a video game running on a custom, extremely specialized 2D game engine, which is currently nameless. (Name suggestions for the engine appreciated!)
 
-This project uses Eto.Forms and NAudio, for it's windowing and audio necessities, respectively.
+This project uses NAudio, for it's audio necessities, and Silk.NET and SkiaSharp for all of it's rendering and windowing.
 
 It is made in C#, and runs on net10.0. It currently doesn't support Linux, although that will change soon enough. MacOS will probably never be officially supported.
 
