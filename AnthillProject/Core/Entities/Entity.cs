@@ -28,7 +28,6 @@ public abstract class Entity : IProvidable, ISimulable, IInitializable, ITexture
     public Entity(EntityProviderArgs i){
         Position = i.Position;
         Velocity = i.Velocity;
-        ArbitraryData = i.Arbitrary;
     }
     //1 unit in the position is 1 tile.
     public Vector2 Position;
@@ -36,9 +35,9 @@ public abstract class Entity : IProvidable, ISimulable, IInitializable, ITexture
     //Velocity is in tiles per tick. Velocity is halved every tick to simulate friction.
     public Vector2 Velocity;
 
-    //Arbitrary data that you can write anything into.
-    //After the entity gets saved, this will get saved too and will get restored after the entity gets loaded again.
-    public byte[] ArbitraryData{get; set;} = [];
+    //Arbitrary data that can return anything.
+    //After the entity gets saved, this will get saved too and will be provided in the constructor in the EntityProviderArgs after the entity gets loaded again.
+    public virtual byte[] GetArbitraryData() => [];
     public IChunk? CurrentChunk{
         get;
         set{

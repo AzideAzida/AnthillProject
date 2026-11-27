@@ -6,7 +6,7 @@ public class PlaceholderChunkGenerator : IChunkGenerator{
     public IChunk Generate(IChunk chunk) =>
         chunk;
     
-    public byte[] ArbitraryData{get => []; set{}}
+    public byte[] GetArbitraryData() => [];
     public string GetProviderIdentifier() => ProviderInstance.GetIdentifier();
     internal static IInstanceProvider<IChunkGenerator> ProviderInstance = new Provider();
     private sealed class Provider : IInstanceProvider<IChunkGenerator>{

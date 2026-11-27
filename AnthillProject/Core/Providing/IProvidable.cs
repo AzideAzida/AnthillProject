@@ -1,5 +1,5 @@
 namespace AnthillProject.Core.Providing;
 public interface IProvidable{
-    byte[] ArbitraryData{get; set;}
+    byte[] GetArbitraryData();
     string GetProviderIdentifier();
 }

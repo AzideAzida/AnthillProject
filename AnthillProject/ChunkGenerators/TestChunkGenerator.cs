@@ -31,7 +31,7 @@ public class TestChunkGenerator : IChunkGenerator{
     public TestChunkGenerator(int seed = 0) =>
         Seed = seed;
 
-    public byte[] ArbitraryData{get => []; set{}}
+    public byte[] GetArbitraryData() => [];
 
     public string GetProviderIdentifier() => ProviderInstance.GetIdentifier();
     internal static IInstanceProvider<IChunkGenerator> ProviderInstance = new Provider();

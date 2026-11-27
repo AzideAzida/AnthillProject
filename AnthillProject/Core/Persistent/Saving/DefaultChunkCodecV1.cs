@@ -147,7 +147,7 @@ public class DefaultChunkCodecV1 : IChunkCodec{
         for(int x = 0; x < ChunkSizeX; x++)
             for(int y = 0; y < ChunkSizeY; y++){
                 var tile = chunk.GetTile(new Coordinates(x, y));
-                var data = tile.ArbitraryData;
+                var data = tile.GetArbitraryData();
                 var id = tile.GetProviderIdentifier();
                 TileProviders.Add(id);
                 TileArbitraryDatas.Add(data);
@@ -163,7 +163,7 @@ public class DefaultChunkCodecV1 : IChunkCodec{
 
         //Adding to the provider pallete and arbitrary data pallete for entities.
         foreach(var i in entities){
-            var data = i.ArbitraryData;
+            var data = i.GetArbitraryData();
             var id = i.GetProviderIdentifier();
             if(!EntityProviderPallete.ContainsKey(id))
                 EntityProviderPallete.Add(id, (ushort)EntityProviderPallete.Count);
@@ -222,13 +222,13 @@ public class DefaultChunkCodecV1 : IChunkCodec{
 
             //Provider and arbitrary data. Both are pallete entries.
             temp1.AddRange(GetBytesBE(EntityProviderPallete[i.GetProviderIdentifier()]));
-            temp1.AddRange(GetBytesBE(DataPallete[i.ArbitraryData]));
+            temp1.AddRange(GetBytesBE(DataPallete[i.GetArbitraryData()]));
         }
         ProcessTemp(temp1);
         
         return current.ToArray();
     }
-    public byte[] ArbitraryData{get => []; set{}}
+    public byte[] GetArbitraryData() => [];
 
     public string GetProviderIdentifier() => ProviderInstance.GetIdentifier();
     internal static IInstanceProvider<IChunkCodec> ProviderInstance = new Provider();

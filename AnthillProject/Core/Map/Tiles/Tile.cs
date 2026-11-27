@@ -13,11 +13,9 @@ public abstract class Tile : IProvidable, ISimulable, IInitializable, ITextured,
 
     public abstract string GetProviderIdentifier();
 
-    public Tile(TileProviderArgs Args){
-        ArbitraryData = Args.Arbitrary;
-    }
+    public Tile(TileProviderArgs Args){}
 
-    public byte[] ArbitraryData{get; set;}
+    public virtual byte[] GetArbitraryData() => [];
 
     public IChunk Parent{get; set;}
 }
