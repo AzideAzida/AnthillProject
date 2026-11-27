@@ -1,17 +1,18 @@
 using SkiaSharp;
 using AnthillProject.Core.Map.Tiles;
 using AnthillProject.Core.Providing;
+using AnthillProject.Core;
 namespace AnthillProject.TileBehaviours;
 
 public class Grassland : Tile{
-    public override SKBitmap GetTexture() =>
-        Core.Utility.ArgbBitmap1x1(0, 255, 0);
+    private readonly static SKBitmap Texture = Utility.RetrieveTexture($"Tiles.{nameof(Grassland)}.png");
+    public override SKBitmap GetTexture() => Texture;
     public override void Simulate(){
-        
+        base.Simulate();
     }
     
     public override void Init(){
-        
+        base.Init();
     }
 
     public Grassland(TileProviderArgs Args):base(Args){}

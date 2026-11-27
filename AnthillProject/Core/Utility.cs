@@ -1,10 +1,23 @@
-#pragma warning disable CS8600
-
 using SkiaSharp;
 using AnthillProject.Core.Persistent.Saving;
+using System.Reflection;
 
 namespace AnthillProject.Core;
 public static class Utility{
+    static Utility(){
+        AnthillProjectAssembly = typeof(Program).Assembly;
+        ManifestResourceNames = AnthillProjectAssembly.GetManifestResourceNames();
+    }
+    public readonly static Assembly AnthillProjectAssembly;
+    public static string[] ManifestResourceNames{
+        get =>
+            (string[])field.Clone();
+        private set;
+    }
+    public static SKBitmap RetrieveTexture(string name){
+        using var stream = AnthillProjectAssembly.GetManifestResourceStream($"AnthillProject.Resources.Textures.{name}");
+        return SKBitmap.Decode(stream);
+    }
     public static int IntFromBytesBE(byte[] bytes){//https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/how-to-convert-a-byte-array-to-an-int
         if(BitConverter.IsLittleEndian)
             Array.Reverse(bytes);

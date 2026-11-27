@@ -16,4 +16,10 @@
     <PackageReference Include="SkiaSharp" Version="4.157.0" />
     <PackageReference Include="NAudio" Version="3.1.0" />
   </ItemGroup>
+
+  <!--Embedded resources-->
+  <ItemGroup>
+    <EmbeddedResource Include="Resources/Textures/Tiles/Grassland.png" />
+    <EmbeddedResource Include="Resources/Textures/Tiles/Ocean.png" />
+  </ItemGroup>
 </Project>
