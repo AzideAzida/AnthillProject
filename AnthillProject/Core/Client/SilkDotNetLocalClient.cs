@@ -28,7 +28,6 @@ public class SilkDotNetLocalClient : IClient{
 
             float InvertYPosition(float i) => Height - i - GetTileTextureHeight();
 
-            var Profile = new ChunkProfile(Program.Instance.CurrentEntity, GetImageWidthInTiles(), GetImageHeightInTiles());
 
             void Draw(SKBitmap img, float x, float y){
                 Canvas.DrawBitmap(img, x, y, SKSamplingOptions.Default);
@@ -91,6 +90,8 @@ public class SilkDotNetLocalClient : IClient{
         protected virtual int GetTileTextureHeight() =>
             Height / GetImageHeightInTiles();
 
+        protected ChunkProfile Profile;
+
         protected SKCanvas Canvas;
         protected GRContext GrContext;
     #endregion
@@ -120,6 +121,10 @@ public class SilkDotNetLocalClient : IClient{
         public event Action<IMouse, ScrollWheel> OnMouseScroll;
 
         public void Init(){
+            Thread.Sleep(1000);
+            Program.Instance.Server.OnServerTickFinish += () => {
+                Profile = new ChunkProfile(Program.Instance.CurrentEntity, GetImageWidthInTiles(), GetImageHeightInTiles());
+            };
             //Based of off https://raw.githubusercontent.com/dotnet/Silk.NET/main/src/Lab/Experiments/SilkBackedSkiaRendering/Program.cs
             var options = WindowOptions.Default;
             options.Size = new Vector2D<int>(OriginalWindowSize, OriginalWindowSize);

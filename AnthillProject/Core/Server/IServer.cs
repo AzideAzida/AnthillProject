@@ -7,8 +7,11 @@ namespace AnthillProject.Core.Server;
 
 //Init() will be called in a new thread; there is no need for you to make a new thread yourself.
 //The server should create a loop where all simulation happens in Init(), with Task.Delay or other stuff so it doesn't simulate 1000 times per second.
-//The server should also simulate both all loaded chunks and it's respective client, which will usually be Program.Client.
+//The server should also simulate all loaded chunks.
 public interface IServer : IInitializable{
+    //Should be invoked every tick.
+    event Action OnServerTickFinish;
+
     //Should save the provided chunk to it's save coordinates.
     //It is recommended to use an ISaveManager.
     void SaveChunk(IChunk chunk);
