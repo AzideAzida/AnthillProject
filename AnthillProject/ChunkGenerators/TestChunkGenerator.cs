@@ -13,7 +13,7 @@ public class TestChunkGenerator : IChunkGenerator{
     public IChunk Generate(IChunk chunk){
         for(byte x = 0; x < chunk.GetSizeX(); x++)
             for(byte y = 0; y < chunk.GetSizeY(); y++)
-                if(false &&
+                if(
                     new Random(
                         x + (
                             y * chunk.GetSizeY()
