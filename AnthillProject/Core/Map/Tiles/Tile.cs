@@ -1,11 +1,9 @@
 #pragma warning disable CS8618
 using AnthillProject.Core.Map.Chunks;
-using AnthillProject.Core.Interfaces;
-using AnthillProject.Core.Providing;
 using SkiaSharp;
 
 namespace AnthillProject.Core.Map.Tiles;
-public abstract class Tile : IProvidable, ISimulable, IInitializable, ITextured, IParented<IChunk>{
+public abstract class Tile : ITile{
     public virtual void Init(){}
     public virtual void Simulate(){}
     public virtual SKBitmap GetTexture() =>

@@ -66,7 +66,7 @@ public class SilkDotNetLocalClient : IClient{
 
             Canvas.Flush();
         }
-        protected virtual SKBitmap GetTileTexture(Tile tile) =>
+        protected virtual SKBitmap GetTileTexture(ITile tile) =>
         Utility.ResizeImage(
             tile.GetTexture(),
             GetTileTextureWidth(),

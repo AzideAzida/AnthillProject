@@ -11,9 +11,9 @@ public interface IChunk : ISimulable, IParented<IServer>{
     int GetSizeY();
     
     //First tile is is 0, 0.
-    Tile GetTile(Coordinates coordinates);
-    void SetTile(Coordinates coordinates, Tile tile);
-    Coordinates GetCoordinates(Tile tile);
+    ITile GetTile(Coordinates coordinates);
+    void SetTile(Coordinates coordinates, ITile tile);
+    Coordinates GetCoordinates(ITile tile);
 
     //Should initialize and load the entity.
     //This should be used when spawing an entity, and not when (for example) moving one from one chunk to another.

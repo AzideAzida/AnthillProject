@@ -39,9 +39,9 @@ public sealed class Program{
         InstanceProviderManager = new DefaultInstanceProviderManager();
         Client = new SilkDotNetLocalClient();
 
-        InstanceProviderManager.RegisterInstanceProvider<Tile           >(UnknownTile                .ProviderInstance);
-        InstanceProviderManager.RegisterInstanceProvider<Tile           >(Ocean                      .ProviderInstance);
-        InstanceProviderManager.RegisterInstanceProvider<Tile           >(Grassland                  .ProviderInstance);
+        InstanceProviderManager.RegisterInstanceProvider<ITile           >(UnknownTile                .ProviderInstance);
+        InstanceProviderManager.RegisterInstanceProvider<ITile           >(Ocean                      .ProviderInstance);
+        InstanceProviderManager.RegisterInstanceProvider<ITile           >(Grassland                  .ProviderInstance);
 
         InstanceProviderManager.RegisterInstanceProvider<IEntity        >(UnknownEntity              .ProviderInstance);
         InstanceProviderManager.RegisterInstanceProvider<IEntity        >(Player                     .ProviderInstance);

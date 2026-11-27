@@ -29,13 +29,13 @@ public readonly struct ChunkProfile : IChunk{
     private readonly int SizeX;
     public int GetSizeY() => SizeY;
     private readonly int SizeY;
-    public Tile GetTile(Coordinates coordinates) =>
+    public ITile GetTile(Coordinates coordinates) =>
         Tiles[coordinates.x, coordinates.y];
-    public void SetTile(Coordinates coordinates, Tile tile) =>
+    public void SetTile(Coordinates coordinates, ITile tile) =>
         Tiles[coordinates.x, coordinates.y] = tile;
     
     
-    private readonly Tile[,] Tiles;
+    private readonly ITile[,] Tiles;
     public ChunkProfile(IEntity TargetEntity, byte lenght, byte height){
         //This is some bullshit code right here.
         
@@ -43,7 +43,7 @@ public readonly struct ChunkProfile : IChunk{
         SizeY = height;
         
         loadedEntities = new List<IEntity>();
-        Tiles = new Tile[GetSizeX(), GetSizeY()];
+        Tiles = new ITile[GetSizeX(), GetSizeY()];
         if(
                 TargetEntity              == null
             ||  TargetEntity.CurrentChunk == null
@@ -120,6 +120,6 @@ public readonly struct ChunkProfile : IChunk{
     }
     public Coordinates GetPossibleExitChunkRelativeCoordinates(int x, int y) =>
         throw new NotSupportedException("Since ChunkProfiles cannot have parents, they cannot have neighboor chunks.");
-    public Coordinates GetCoordinates(Tile tile) =>
+    public Coordinates GetCoordinates(ITile tile) =>
         throw new NotSupportedException("ChunkProfiles cannot provide a tile's coordinates.");
 }

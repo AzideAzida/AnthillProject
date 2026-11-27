@@ -25,7 +25,7 @@ public sealed class InvalidChunk : IChunk{
         set => throw ResultantException;
     }
 
-    public Coordinates GetCoordinates(Tile tile){
+    public Coordinates GetCoordinates(ITile tile){
         throw ResultantException;
     }
 
@@ -37,7 +37,7 @@ public sealed class InvalidChunk : IChunk{
         throw ResultantException;
     }
 
-    public Tile GetTile(Coordinates coordinates){
+    public ITile GetTile(Coordinates coordinates){
         throw ResultantException;
     }
 
@@ -45,7 +45,7 @@ public sealed class InvalidChunk : IChunk{
         throw ResultantException;
     }
 
-    public void SetTile(Coordinates coordinates, Tile tile){
+    public void SetTile(Coordinates coordinates, ITile tile){
         throw ResultantException;
     }
 

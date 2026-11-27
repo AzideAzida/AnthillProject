@@ -5,13 +5,13 @@ using AnthillProject.Core.Tiling;
 using AnthillProject.Core.Server;
 
 namespace AnthillProject.Core.Map.Chunks;
-public class Chunk : TiledObject<Tile>, IChunk{
-    public override Tile GetDefaultTile() =>
+public class Chunk : TiledObject<ITile>, IChunk{
+    public override ITile GetDefaultTile() =>
         new UnknownTile(new TileProviderArgs());
     public int GetSizeX() => SizeX;
     public int GetSizeY() => SizeY;
 
-    public Coordinates GetCoordinates(Tile tile) => GetCoordinatesOfTile(tile);
+    public Coordinates GetCoordinates(ITile tile) => GetCoordinatesOfTile(tile);
 
     public Chunk() : this(8, 8){}
     public Chunk(int sx, int sy) : base(sx, sy){
@@ -50,7 +50,7 @@ public class Chunk : TiledObject<Tile>, IChunk{
         entity.CurrentChunk = this;
     }
 
-    public void SetTile(Coordinates coordinates, Tile tile){
+    public void SetTile(Coordinates coordinates, ITile tile){
         this[coordinates] = tile;
         tile.Parent = this;
     }

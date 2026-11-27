@@ -17,9 +17,9 @@ public class Ocean : Tile{
     public Ocean(TileProviderArgs Args):base(Args){}
 
     public override string GetProviderIdentifier() => ProviderInstance.GetIdentifier();
-    internal static IInstanceProvider<Tile> ProviderInstance = new Provider();
-    private sealed class Provider : IInstanceProvider<Tile>{
-        public Tile ProvideInstance(object Args) =>
+    internal static IInstanceProvider<ITile> ProviderInstance = new Provider();
+    private sealed class Provider : IInstanceProvider<ITile>{
+        public ITile ProvideInstance(object Args) =>
             new Ocean((TileProviderArgs)Args);
     }
 }
