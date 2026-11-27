@@ -150,7 +150,7 @@ public class SingleplayerLocalServer : IServer{
             throw new ArgumentException($"The provided coordinates {coordinates} point to a chunk that isn't loaded! (Did you forget to load it?)");
         }
     }
-    public Entity FindEntity(EntityIdentifier identifier) =>
+    public IEntity FindEntity(EntityIdentifier identifier) =>
         GetChunk(identifier.ChunkCoordinates).LoadedEntities[identifier.EntityIndex];
 
     public void SaveChunk(IChunk chunk){
@@ -160,7 +160,7 @@ public class SingleplayerLocalServer : IServer{
     public bool IsChunkLoaded(Coordinates coordinates) =>
         LoadedChunks.ContainsKey(coordinates);
 
-    public void HandleEntityChunkTransition(Entity entity){
+    public void HandleEntityChunkTransition(IEntity entity){
         if(entity == null)
             throw new ArgumentException("Cannot handle entity chunk transition for a null entity!");
         if(entity.CurrentChunk == null)

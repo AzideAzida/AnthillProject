@@ -77,9 +77,9 @@ public class DefaultChunkCodecV1 : IChunkCodec{
         foreach(var i in GetPallete())
             TileProviderPallete.Add(Program.Instance.InstanceProviderManager.GetInstanceProvider<Tile>(Encoding.ASCII.GetString(i)));
 
-        var EntityProviderPallete = new List<IInstanceProvider<Entity>>();
+        var EntityProviderPallete = new List<IInstanceProvider<IEntity>>();
         foreach(var i in GetPallete())
-            EntityProviderPallete.Add(Program.Instance.InstanceProviderManager.GetInstanceProvider<Entity>(Encoding.ASCII.GetString(i)));
+            EntityProviderPallete.Add(Program.Instance.InstanceProviderManager.GetInstanceProvider<IEntity>(Encoding.ASCII.GetString(i)));
 
         var DataPallete = GetPallete();
 

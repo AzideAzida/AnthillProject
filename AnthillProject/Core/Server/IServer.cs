@@ -42,9 +42,9 @@ public interface IServer : IInitializable{
     //If the chunk that the coordinates point to isn't loaded, you can load and return it, pull it directly from your saving system or throw an exception.
     IChunk GetChunk(Coordinates coordinates);
 
-    Entity FindEntity(EntityIdentifier identifier);
+    IEntity FindEntity(EntityIdentifier identifier);
 
     //This should take care of moving an entity from one chunk to another.
     //This also includes figuring out it's new position and chunk coordinate.
-    void HandleEntityChunkTransition(Entity entity);
+    void HandleEntityChunkTransition(IEntity entity);
 }

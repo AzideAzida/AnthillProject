@@ -36,16 +36,16 @@ public class Chunk : TiledObject<Tile>, IChunk{
     }
     public IServer Parent{get; set;}
 
-    public IList<Entity> LoadedEntities{get; set;} = new List<Entity>();
+    public IList<IEntity> LoadedEntities{get; set;} = new List<IEntity>();
     
     public Coordinates SaveCoordinates{get; set;}
     
-    public void SummonEntity(Entity entity){
+    public void SummonEntity(IEntity entity){
         entity.Init();
         LoadEntity(entity);
     }
 
-    public void LoadEntity(Entity entity){
+    public void LoadEntity(IEntity entity){
         LoadedEntities.Add(entity);
         entity.CurrentChunk = this;
     }

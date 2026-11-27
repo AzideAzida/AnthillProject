@@ -73,7 +73,7 @@ public class SilkDotNetLocalClient : IClient{
             GetTileTextureHeight()
         );
     
-        protected virtual SKBitmap GetEntityTexture(Entity entity){
+        protected virtual SKBitmap GetEntityTexture(IEntity entity){
             var size = entity.GetSize();
             return Utility.ResizeImage(entity.GetTexture(), 
                 (int)(size.x * GetTileTextureWidth ()),

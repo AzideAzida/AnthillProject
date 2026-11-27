@@ -17,11 +17,11 @@ public interface IChunk : ISimulable, IParented<IServer>{
 
     //Should initialize and load the entity.
     //This should be used when spawing an entity, and not when (for example) moving one from one chunk to another.
-    void SummonEntity(Entity entity);
+    void SummonEntity(IEntity entity);
 
     //Places the entity in the chunk. This should not initialize it.
-    void LoadEntity(Entity entity);
-    IList<Entity> LoadedEntities{get; set;}
+    void LoadEntity(IEntity entity);
+    IList<IEntity> LoadedEntities{get; set;}
 
     //When an ISaveManager saves a provided chunk, it will get saved to these coordinates.
     //Likewise, when an ISaveManager loads an existing chunk from coordinates, this will be set to those coordinates.

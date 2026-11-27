@@ -1,12 +1,10 @@
 using AnthillProject.Core.Math;
 using SkiaSharp;
 using AnthillProject.Core.Map.Chunks;
-using AnthillProject.Core.Interfaces;
-using AnthillProject.Core.Providing;
 
 namespace AnthillProject.Core.Entities;
 
-public abstract class Entity : IProvidable, ISimulable, IInitializable, ITextured{
+public abstract class Entity : IEntity{
     private const float PositionRoundingMargin = 0.005f;
     
     public virtual void Init(){}
@@ -30,10 +28,10 @@ public abstract class Entity : IProvidable, ISimulable, IInitializable, ITexture
         Velocity = i.Velocity;
     }
     //1 unit in the position is 1 tile.
-    public Vector2 Position;
+    public Vector2 Position{get; set;}
 
     //Velocity is in tiles per tick. Velocity is halved every tick to simulate friction.
-    public Vector2 Velocity;
+    public Vector2 Velocity{get; set;}
 
     //Arbitrary data that can return anything.
     //After the entity gets saved, this will get saved too and will be provided in the constructor in the EntityProviderArgs after the entity gets loaded again.

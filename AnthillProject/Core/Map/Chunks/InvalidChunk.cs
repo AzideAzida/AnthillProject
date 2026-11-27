@@ -12,7 +12,7 @@ public sealed class InvalidChunk : IChunk{
     public readonly string Reason;
     private Exception ResultantException => new NotSupportedException(
         $"Cannot perform operation on invalid chunk! Reason: {Reason}");
-    public IList<Entity> LoadedEntities{
+    public IList<IEntity> LoadedEntities{
         get => throw ResultantException;
         set => throw ResultantException;
     }
@@ -41,7 +41,7 @@ public sealed class InvalidChunk : IChunk{
         throw ResultantException;
     }
 
-    public void LoadEntity(Entity entity){
+    public void LoadEntity(IEntity entity){
         throw ResultantException;
     }
 
@@ -53,7 +53,7 @@ public sealed class InvalidChunk : IChunk{
         throw ResultantException;
     }
 
-    public void SummonEntity(Entity entity){
+    public void SummonEntity(IEntity entity){
         throw ResultantException;
     }
 }

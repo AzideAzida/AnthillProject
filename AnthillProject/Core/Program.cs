@@ -22,7 +22,7 @@ public sealed class Program{
     public IPersistentDataManager PersistentDataManager;
     public ISaveManager SaveManager;
 
-    public Entity CurrentEntity;
+    public IEntity CurrentEntity;
 
     [STAThread]
     private static void Main() => new Program();
@@ -39,14 +39,17 @@ public sealed class Program{
         InstanceProviderManager = new DefaultInstanceProviderManager();
         Client = new SilkDotNetLocalClient();
 
-        InstanceProviderManager.RegisterInstanceProvider(UnknownTile                .ProviderInstance);
-        InstanceProviderManager.RegisterInstanceProvider(Ocean                      .ProviderInstance);
-        InstanceProviderManager.RegisterInstanceProvider(Grassland                  .ProviderInstance);
-        InstanceProviderManager.RegisterInstanceProvider(UnknownEntity              .ProviderInstance);
-        InstanceProviderManager.RegisterInstanceProvider(Player                     .ProviderInstance);
-        InstanceProviderManager.RegisterInstanceProvider(DefaultChunkCodecV1        .ProviderInstance);
-        InstanceProviderManager.RegisterInstanceProvider(TestChunkGenerator         .ProviderInstance);
-        InstanceProviderManager.RegisterInstanceProvider(PlaceholderChunkGenerator  .ProviderInstance);
+        InstanceProviderManager.RegisterInstanceProvider<Tile           >(UnknownTile                .ProviderInstance);
+        InstanceProviderManager.RegisterInstanceProvider<Tile           >(Ocean                      .ProviderInstance);
+        InstanceProviderManager.RegisterInstanceProvider<Tile           >(Grassland                  .ProviderInstance);
+
+        InstanceProviderManager.RegisterInstanceProvider<IEntity        >(UnknownEntity              .ProviderInstance);
+        InstanceProviderManager.RegisterInstanceProvider<IEntity        >(Player                     .ProviderInstance);
+
+        InstanceProviderManager.RegisterInstanceProvider<IChunkCodec    >(DefaultChunkCodecV1        .ProviderInstance);
+
+        InstanceProviderManager.RegisterInstanceProvider<IChunkGenerator>(TestChunkGenerator         .ProviderInstance);
+        InstanceProviderManager.RegisterInstanceProvider<IChunkGenerator>(PlaceholderChunkGenerator  .ProviderInstance);
 
         PersistentDataManager = new DefaultPersistentDataManager();
         SaveManager = new DefaultDiskSaveManager(PersistentDataManager);

@@ -69,9 +69,9 @@ public class Player : Entity{
     }
 
     public override string GetProviderIdentifier() => ProviderInstance.GetIdentifier();
-    internal static IInstanceProvider<Entity> ProviderInstance = new Provider();
-    private sealed class Provider : IInstanceProvider<Entity>{
-        public Entity ProvideInstance(object Args) =>
+    internal static IInstanceProvider<IEntity> ProviderInstance = new Provider();
+    private sealed class Provider : IInstanceProvider<IEntity>{
+        public IEntity ProvideInstance(object Args) =>
             new UnknownEntity((EntityProviderArgs)Args);
     }
 }

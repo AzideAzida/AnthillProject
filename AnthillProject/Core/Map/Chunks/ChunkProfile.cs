@@ -11,7 +11,7 @@ namespace AnthillProject.Core.Map.Chunks;
 
 public readonly struct ChunkProfile : IChunk{
     private class DummyEntity : Entity{
-        private readonly Entity Source;
+        private readonly IEntity Source;
         public override Vector2 GetSize() => 
             Source.GetSize();
 
@@ -20,7 +20,7 @@ public readonly struct ChunkProfile : IChunk{
         public override string GetProviderIdentifier() =>
             Source.GetProviderIdentifier();
         
-        public DummyEntity(Entity src, Vector2 position){
+        public DummyEntity(IEntity src, Vector2 position){
             Source = src;
             Position = position;
         }
@@ -36,13 +36,13 @@ public readonly struct ChunkProfile : IChunk{
     
     
     private readonly Tile[,] Tiles;
-    public ChunkProfile(Entity TargetEntity, byte lenght, byte height){
+    public ChunkProfile(IEntity TargetEntity, byte lenght, byte height){
         //This is some bullshit code right here.
         
         SizeX = lenght;
         SizeY = height;
         
-        loadedEntities = new List<Entity>();
+        loadedEntities = new List<IEntity>();
         Tiles = new Tile[GetSizeX(), GetSizeY()];
         if(
                 TargetEntity              == null
@@ -96,18 +96,18 @@ public readonly struct ChunkProfile : IChunk{
         //Jesus fucking christ, that was fucking horrific. Let's NEVER do that again, PLEASE!
     }
 
-    private readonly List<Entity> loadedEntities;
-    public readonly IList<Entity> LoadedEntities{
-        get => new List<Entity>(loadedEntities);
+    private readonly List<IEntity> loadedEntities;
+    public readonly IList<IEntity> LoadedEntities{
+        get => new List<IEntity>(loadedEntities);
 
     //Unsopported stuff
         set => throw new NotSupportedException("Cannot set a ChunkProfile's LoadedEntities property.");
     }
     public void Simulate() =>
         throw new NotSupportedException("ChunkProfiles cannot be simulated!");
-    public void SummonEntity(Entity entity) =>
+    public void SummonEntity(IEntity entity) =>
         throw new NotSupportedException("Cannot summon entities in a ChunkProfile!");
-    public void LoadEntity(Entity entity) =>
+    public void LoadEntity(IEntity entity) =>
         throw new NotSupportedException("Cannot load entities in an existing ChunkProfile!");
     
     public IServer Parent{
