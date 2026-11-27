@@ -37,11 +37,14 @@ public abstract class Entity : IEntity{
             var x = Position.x;
             var y = Position.y;
 
-            /**/ if(Position.x >= chunk.GetSizeX()) x = MathF.Abs(chunk.GetSizeX() - Position.x);
-            else if(Position.x <  0               ) x =           chunk.GetSizeX() + Position.x ;
+            //I don't know why, I don't want to know why, I shouldn't have to wonder why,
+            //but for whatever reason this stupid entity isn't going to the correct position when transitioning
+            //on negative coordinates unless I add 1 to the respective axis.
+            /**/ if(Position.x >= chunk.GetSizeX()) x = MathF.Abs(chunk.GetSizeX() - Position.x)    ;
+            else if(Position.x <  0               ) x =           chunk.GetSizeX() + Position.x + 1 ;
 
-            /**/ if(Position.y >= chunk.GetSizeY()) y = MathF.Abs(chunk.GetSizeY() - Position.y);
-            else if(Position.y <  0               ) y =           chunk.GetSizeY() + Position.y ;
+            /**/ if(Position.y >= chunk.GetSizeY()) y = MathF.Abs(chunk.GetSizeY() - Position.y)    ;
+            else if(Position.y <  0               ) y =           chunk.GetSizeY() + Position.y + 1 ;
 
             Position = new Vector2(x, y);
         }
