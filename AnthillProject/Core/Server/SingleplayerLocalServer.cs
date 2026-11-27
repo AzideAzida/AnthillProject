@@ -190,4 +190,36 @@ public class SingleplayerLocalServer : IServer{
         TempChunks.Add(new TempChunkEntry(ticks, coordinates));
         return LoadChunk(coordinates);
     }
+
+    public async void SaveChunkAsync(IChunk chunk, Action? OnFinish = null){
+        await Task.Run(() => SaveChunk(chunk));
+        if(OnFinish != null)
+            OnFinish();
+    }
+
+    public async void SaveAndExitAsync(Action? OnFinish = null){
+        await Task.Run(() => SaveAndExit());
+        if(OnFinish != null)
+            OnFinish();
+    }
+
+    public async void LoadChunkAsync(Coordinates coordinates, Action<IChunk>? OnFinish = null){
+        IChunk chunk = new InvalidChunk("Async server operation never set the provided action parameter to anything!");
+        await Task.Run(() => chunk = LoadChunk(coordinates));
+        if(OnFinish != null)
+            OnFinish(chunk);
+    }
+
+    public async void LoadTempChunkForTicksAsync(Coordinates coordinates, int ticks, Action<IChunk>? OnFinish = null){
+        IChunk chunk = new InvalidChunk("Async server operation never set the provided action parameter to anything!");
+        await Task.Run(() => chunk = LoadTempChunkForTicks(coordinates, ticks));
+        if(OnFinish != null)
+            OnFinish(chunk);
+    }
+
+    public async void UnloadAndSaveChunkAsync(Coordinates coordinates, Action? OnFinish = null){
+        await Task.Run(() => UnloadAndSaveChunk(coordinates));
+        if(OnFinish != null)
+            OnFinish();
+    }
 }
