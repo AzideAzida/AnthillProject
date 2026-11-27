@@ -56,4 +56,8 @@ public sealed class InvalidChunk : IChunk{
     public void SummonEntity(IEntity entity){
         throw ResultantException;
     }
+
+    public void OnUnload(){
+        throw ResultantException;
+    }
 }

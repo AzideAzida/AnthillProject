@@ -34,6 +34,7 @@ public readonly struct ChunkProfile : IChunk{
     public void SetTile(Coordinates coordinates, ITile tile) =>
         Tiles[coordinates.x, coordinates.y] = tile;
     
+    public void OnUnload(){}
     
     private readonly ITile[,] Tiles;
     public ChunkProfile(IEntity TargetEntity, byte lenght, byte height){

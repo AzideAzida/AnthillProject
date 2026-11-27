@@ -36,4 +36,8 @@ public interface IChunk : ISimulable, IParented<IServer>{
             (int)MathF.Floor(coordinates.x / GetSizeX()),
             (int)MathF.Floor(coordinates.y / GetSizeY())
         );
+    
+    //This should not unload it, as the server will already take care of that.
+    //Instead, this should do stuff like taking care of disposing any stuff it may be using.
+    void OnUnload();
 }

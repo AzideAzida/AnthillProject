@@ -30,6 +30,13 @@ public class Chunk : TiledObject<ITile>, IChunk{
     public IList<IEntity> LoadedEntities{get; set;} = new List<IEntity>();
     
     public Coordinates SaveCoordinates{get; set;}
+    public void OnUnload(){
+        foreach(var i in GetAllCoordinates())
+            Utility.TryDispose(GetTile(i.x, i.y));
+        
+        foreach(var i in LoadedEntities)
+            Utility.TryDispose(i);
+    }
     
     public void SummonEntity(IEntity entity){
         entity.Init();

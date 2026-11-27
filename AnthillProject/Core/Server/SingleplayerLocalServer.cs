@@ -139,6 +139,7 @@ public class SingleplayerLocalServer : IServer{
         var chunk = LoadedChunks[coordinates];
         SaveChunk(chunk);
         LoadedChunks.Remove(coordinates);
+        chunk.OnUnload();
     }
 
     //If the specified chunk isn't loaded, it'll throw an exception.
