@@ -65,8 +65,4 @@ public interface IServer : IInitializable{
     IChunk GetChunk(Coordinates coordinates);
 
     IEntity FindEntity(EntityIdentifier identifier);
-
-    //This should take care of moving an entity from one chunk to another.
-    //This also includes figuring out it's new position and chunk coordinate.
-    void HandleEntityChunkTransition(IEntity entity);
 }

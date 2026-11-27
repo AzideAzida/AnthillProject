@@ -22,17 +22,8 @@ public class Chunk : TiledObject<ITile>, IChunk{
 
     public override void Simulate(){
         base.Simulate();
-        foreach(var i in LoadedEntities){
+        foreach(var i in LoadedEntities)
             i.Simulate();
-
-            //Checking if the entity has left the chunk.
-            if(
-                    i.Position.x >= GetSizeX()
-                ||  i.Position.y >= GetSizeY()
-                ||  i.Position.y <  0
-                ||  i.Position.x <  0
-            ) Parent.HandleEntityChunkTransition(i);
-        }
     }
     public IServer Parent{get; set;}
 

@@ -160,32 +160,6 @@ public class SingleplayerLocalServer : IServer{
     public bool IsChunkLoaded(Coordinates coordinates) =>
         LoadedChunks.ContainsKey(coordinates);
 
-    public void HandleEntityChunkTransition(IEntity entity){
-        if(entity == null)
-            throw new ArgumentException("Cannot handle entity chunk transition for a null entity!");
-        if(entity.CurrentChunk == null)
-            throw new ArgumentException("Cannot handle an entity chunk transition if the entity's chunk is null!");
-            
-
-        entity.CurrentChunk =
-            GetChunk(
-                entity.CurrentChunk.SaveCoordinates +
-                entity.CurrentChunk.GetPossibleExitChunkRelativeCoordinates(entity.CurrentChunk.SaveCoordinates)
-            );
-        var chunk = entity.CurrentChunk;
-        
-        var x = entity.Position.x;
-        var y = entity.Position.y;
-
-        /**/ if(entity.Position.x >= chunk.GetSizeX()) x = MathF.Abs(chunk.GetSizeX() - entity.Position.x);
-        else if(entity.Position.x <  0               ) x =           chunk.GetSizeX() + entity.Position.x ;
-
-        /**/ if(entity.Position.y >= chunk.GetSizeY()) y = MathF.Abs(chunk.GetSizeY() - entity.Position.y);
-        else if(entity.Position.y <  0               ) y =           chunk.GetSizeY() + entity.Position.y ;
-
-        entity.Position = new Vector2(x, y);
-    }
-
     public IChunk LoadTempChunkForTicks(Coordinates coordinates, int ticks){
         TempChunks.Add(new TempChunkEntry(ticks, coordinates));
         return LoadChunk(coordinates);

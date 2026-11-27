@@ -16,8 +16,35 @@ public abstract class Entity : IEntity{
             Utility.RoundIfCloseToBorders(Position.x, PositionRoundingMargin),
             Utility.RoundIfCloseToBorders(Position.y, PositionRoundingMargin)
         );
-
         Velocity /= 2;
+
+        //Checking if the entity has left the chunk.
+        if(CurrentChunk != null &&
+                Position.x >= CurrentChunk.GetSizeX()
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            ||  Position.y >= CurrentChunk.GetSizeY()
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            ||  Position.y <  0
+            ||  Position.x <  0
+        ){
+            CurrentChunk =
+            CurrentChunk.Parent.GetChunk(
+                CurrentChunk.SaveCoordinates +
+                CurrentChunk.GetPossibleExitChunkRelativeCoordinates(CurrentChunk.SaveCoordinates)
+            );
+            var chunk = CurrentChunk;
+
+            var x = Position.x;
+            var y = Position.y;
+
+            /**/ if(Position.x >= chunk.GetSizeX()) x = MathF.Abs(chunk.GetSizeX() - Position.x);
+            else if(Position.x <  0               ) x =           chunk.GetSizeX() + Position.x ;
+
+            /**/ if(Position.y >= chunk.GetSizeY()) y = MathF.Abs(chunk.GetSizeY() - Position.y);
+            else if(Position.y <  0               ) y =           chunk.GetSizeY() + Position.y ;
+
+            Position = new Vector2(x, y);
+        }
     }
     public virtual SKBitmap GetTexture() => Utility.ArgbBitmap1x1(255, 0, 255);
     public abstract Vector2 GetSize();
