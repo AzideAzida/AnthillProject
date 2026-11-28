@@ -1,6 +1,7 @@
 using SkiaSharp;
 using AnthillProject.Core.Math;
 using AnthillProject.Core.Providing;
+using AnthillProject.Core.Utilities;
 
 namespace AnthillProject.Core.Entities;
 public class UnknownEntity : Entity{
@@ -10,7 +11,7 @@ public class UnknownEntity : Entity{
         new Vector2(0.5f, 0.5f);
 
     public override SKBitmap GetTexture() =>
-        Core.Utility.ArgbBitmap1x1(255, 0, 255);
+        GraphicUtils.ArgbBitmap1x1(255, 0, 255);
 
     public override void Simulate(){
         base.Simulate();

@@ -2,6 +2,7 @@ using AnthillProject.Core.Entities;
 using AnthillProject.Core.Map.Chunks;
 using AnthillProject.Core.Map.Tiles;
 using AnthillProject.Core.Math;
+using AnthillProject.Core.Utilities;
 using NAudio.Wave;
 using Silk.NET.Input;
 using Silk.NET.Maths;
@@ -33,8 +34,8 @@ public class SilkDotNetLocalClient : IClient{
                 Canvas.DrawBitmap(img, x, y, SKSamplingOptions.Default);
             }
 
-            float RelativizeX() => MathF.Floor(Utility.GetDecimals(Program.Instance.CurrentEntity.Position.x) * GetTileTextureWidth () /*- (WinSize.X / 2)*/);
-            float RelativizeY() => MathF.Floor(Utility.GetDecimals(Program.Instance.CurrentEntity.Position.y) * GetTileTextureHeight() /*- (WinSize.Y / 2)*/);
+            float RelativizeX() => MathF.Floor(MathUtils.GetDecimals(Program.Instance.CurrentEntity.Position.x) * GetTileTextureWidth () /*- (WinSize.X / 2)*/);
+            float RelativizeY() => MathF.Floor(MathUtils.GetDecimals(Program.Instance.CurrentEntity.Position.y) * GetTileTextureHeight() /*- (WinSize.Y / 2)*/);
 
             Canvas.Clear(SKColors.Aqua);
 
@@ -67,7 +68,7 @@ public class SilkDotNetLocalClient : IClient{
             Canvas.Flush();
         }
         protected virtual SKBitmap GetTileTexture(ITile tile) =>
-        Utility.ResizeImage(
+        GraphicUtils.ResizeImage(
             tile.GetTexture(),
             GetTileTextureWidth(),
             GetTileTextureHeight()
@@ -75,7 +76,7 @@ public class SilkDotNetLocalClient : IClient{
     
         protected virtual SKBitmap GetEntityTexture(IEntity entity){
             var size = entity.GetSize();
-            return Utility.ResizeImage(entity.GetTexture(), 
+            return GraphicUtils.ResizeImage(entity.GetTexture(), 
                 (int)(size.x * GetTileTextureWidth ()),
                 (int)(size.y * GetTileTextureHeight())
             );

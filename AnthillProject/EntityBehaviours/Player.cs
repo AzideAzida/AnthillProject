@@ -2,6 +2,7 @@ using SkiaSharp;
 using AnthillProject.Core.Math;
 using AnthillProject.Core.Entities;
 using AnthillProject.Core;
+using AnthillProject.Core.Utilities;
 using AnthillProject.Core.Providing;
 using Silk.NET.Input;
 
@@ -49,7 +50,7 @@ public sealed class Player : Entity, IDisposable{
         new Vector2(0.25f);
 
     public override SKBitmap GetTexture() =>
-        Utility.ArgbBitmap1x1(0, 0, 0);
+        GraphicUtils.ArgbBitmap1x1(0, 0, 0);
 
     public override void Simulate(){
         base.Simulate();

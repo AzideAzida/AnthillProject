@@ -4,7 +4,7 @@ using AnthillProject.Core.Math;
 using AnthillProject.Core.Collections;
 using AnthillProject.Core.Map.Tiles;
 using AnthillProject.Core.Entities;
-using static AnthillProject.Core.Utility;
+using static AnthillProject.Core.Utilities.BinaryUtils;
 using System.Text;
 
 namespace AnthillProject.Core.Persistent.Saving;

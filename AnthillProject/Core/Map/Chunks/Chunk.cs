@@ -3,6 +3,7 @@ using AnthillProject.Core.Entities;
 using AnthillProject.Core.Map.Tiles;
 using AnthillProject.Core.Tiling;
 using AnthillProject.Core.Server;
+using AnthillProject.Core.Utilities;
 
 namespace AnthillProject.Core.Map.Chunks;
 public class Chunk : TiledObject<ITile>, IChunk{
@@ -32,10 +33,10 @@ public class Chunk : TiledObject<ITile>, IChunk{
     public Coordinates SaveCoordinates{get; set;}
     public void OnUnload(){
         foreach(var i in GetAllCoordinates())
-            Utility.TryDispose(GetTile(i.x, i.y));
+            MiscUtils.TryDispose(GetTile(i.x, i.y));
         
         foreach(var i in LoadedEntities)
-            Utility.TryDispose(i);
+            MiscUtils.TryDispose(i);
     }
     
     public void SummonEntity(IEntity entity){

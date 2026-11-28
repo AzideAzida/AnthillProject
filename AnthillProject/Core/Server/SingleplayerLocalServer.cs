@@ -2,8 +2,7 @@ using AnthillProject.Core.Entities;
 using AnthillProject.Core.Map.Chunks;
 using AnthillProject.Core.Math;
 using AnthillProject.Core.Persistent.Saving;
-using static AnthillProject.Core.Utility;
-using AnthillProject.Core.Persistent;
+using static AnthillProject.Core.Utilities.MathUtils;
 using AnthillProject.Core.Map.Chunks.Generation;
 using AnthillProject.EntityBehaviours;
 

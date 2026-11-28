@@ -6,6 +6,7 @@ using AnthillProject.Core.Map.Tiles;
 using AnthillProject.Core.Server;
 using SkiaSharp;
 using AnthillProject.TileBehaviours;
+using AnthillProject.Core.Utilities;
 
 namespace AnthillProject.Core.Map.Chunks;
 
@@ -82,8 +83,8 @@ public readonly struct ChunkProfile : IChunk{
                         loadedEntities.Add(
                             new DummyEntity(i,
                                 new Vector2(
-                                    x + Utility.GetDecimals(i.Position.x),
-                                    y + Utility.GetDecimals(i.Position.y)
+                                    x + MathUtils.GetDecimals(i.Position.x),
+                                    y + MathUtils.GetDecimals(i.Position.y)
                                 )
                             )
                         );

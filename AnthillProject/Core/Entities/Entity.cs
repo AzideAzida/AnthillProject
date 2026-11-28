@@ -1,6 +1,7 @@
 using AnthillProject.Core.Math;
 using SkiaSharp;
 using AnthillProject.Core.Map.Chunks;
+using AnthillProject.Core.Utilities;
 
 namespace AnthillProject.Core.Entities;
 
@@ -13,8 +14,8 @@ public abstract class Entity : IEntity{
     public virtual void Simulate(){
         Position += Velocity;
         Position = new Vector2(
-            Utility.RoundIfCloseToBorders(Position.x, PositionRoundingMargin),
-            Utility.RoundIfCloseToBorders(Position.y, PositionRoundingMargin)
+            MathUtils.RoundIfCloseToBorders(Position.x, PositionRoundingMargin),
+            MathUtils.RoundIfCloseToBorders(Position.y, PositionRoundingMargin)
         );
         Velocity /= 2;
 
@@ -49,7 +50,7 @@ public abstract class Entity : IEntity{
             Position = new Vector2(x, y);
         }
     }
-    public virtual SKBitmap GetTexture() => Utility.ArgbBitmap1x1(255, 0, 255);
+    public virtual SKBitmap GetTexture() => GraphicUtils.ArgbBitmap1x1(255, 0, 255);
     public abstract Vector2 GetSize();
     public abstract string GetProviderIdentifier();
     public Entity(){}

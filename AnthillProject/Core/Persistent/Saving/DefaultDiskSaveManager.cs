@@ -4,6 +4,7 @@ using AnthillProject.Core.Map.Chunks.Generation;
 using AnthillProject.Core.Math;
 using AnthillProject.Core.Providing;
 using AnthillProject.Core.Server;
+using AnthillProject.Core.Utilities;
 
 namespace AnthillProject.Core.Persistent.Saving;
 
@@ -16,8 +17,8 @@ public class DefaultDiskSaveManager : ISaveManager{
     protected virtual string GetSaveDir(int save) => $"{GetSavesDir()}/{save}";
     protected virtual string GetChunkDir(int save, Coordinates cords) =>
         $"{GetSaveDir(save)}/Chunks/{
-            Convert.ToHexString(Utility.GetBytesBE(cords.x))
-        }{  Convert.ToHexString(Utility.GetBytesBE(cords.y))}";
+            Convert.ToHexString(BinaryUtils.GetBytesBE(cords.x))
+        }{  Convert.ToHexString(BinaryUtils.GetBytesBE(cords.y))}";
     
     public readonly IPersistentDataManager PersistentDataManager;
     public readonly IChunkCodec ChunkCodec;
@@ -101,8 +102,8 @@ public class DefaultDiskSaveManager : ISaveManager{
     public IServer? GetSave(int save){
         var dat = PersistentDataManager.ReadFileAsBytes($"{GetSaveDir(save)}/.dat");
         var coordinates = new Coordinates(
-            Utility.IntFromBytesBE([dat[0], dat[1], dat[2], dat[3]]),
-            Utility.IntFromBytesBE([dat[4], dat[5], dat[6], dat[7]])
+            BinaryUtils.IntFromBytesBE([dat[0], dat[1], dat[2], dat[3]]),
+            BinaryUtils.IntFromBytesBE([dat[4], dat[5], dat[6], dat[7]])
         );
         List<byte> generator = [];
         for(int i = 8; i < dat.Length; i++)

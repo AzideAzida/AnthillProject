@@ -1,11 +1,11 @@
 using SkiaSharp;
 using AnthillProject.Core.Map.Tiles;
 using AnthillProject.Core.Providing;
-using AnthillProject.Core;
+using AnthillProject.Core.Utilities;
 namespace AnthillProject.TileBehaviours;
 
 public class Ocean : Tile{
-    private readonly static SKBitmap Texture = Utility.RetrieveTexture($"Tiles.{nameof(Ocean)}.png");
+    private readonly static SKBitmap Texture = ReflectionUtils.RetrieveTexture($"Tiles.{nameof(Ocean)}.png");
     public override SKBitmap GetTexture() => Texture;
     public override void Simulate(){
         base.Simulate();
