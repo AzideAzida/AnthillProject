@@ -1,6 +1,6 @@
 using AnthillProject.Core.Persistent.Saving;
 
-namespace AnthillProject.Core;
+namespace AnthillProject.Core.Utilities;
 public static class MiscUtils{
     public static void DoNothing(object? i){}
     public static byte[] ChangeChunkCodec(byte[] source, IChunkCodec sourceCodec, IChunkCodec destCodec) =>
