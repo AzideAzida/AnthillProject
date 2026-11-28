@@ -13,10 +13,6 @@ public abstract class Entity : IEntity{
     //When overriding this, please remember to call the base method!
     public virtual void Simulate(){
         Position += Velocity;
-        Position = new Vector2(
-            MathUtils.RoundIfCloseToBorders(Position.x, PositionRoundingMargin),
-            MathUtils.RoundIfCloseToBorders(Position.y, PositionRoundingMargin)
-        );
         Velocity /= 2;
 
         //Checking if the entity has left the chunk.
@@ -42,10 +38,10 @@ public abstract class Entity : IEntity{
             //but for whatever reason this stupid entity isn't going to the correct position when transitioning
             //on negative coordinates unless I add 1 to the respective axis.
             /**/ if(Position.x >= chunk.GetSizeX()) x = MathF.Abs(chunk.GetSizeX() - Position.x)    ;
-            else if(Position.x <  0               ) x =           chunk.GetSizeX() + Position.x + 1 ;
+            else if(Position.x <  0               ) x =           chunk.GetSizeX() + Position.x + 0 ;
 
             /**/ if(Position.y >= chunk.GetSizeY()) y = MathF.Abs(chunk.GetSizeY() - Position.y)    ;
-            else if(Position.y <  0               ) y =           chunk.GetSizeY() + Position.y + 1 ;
+            else if(Position.y <  0               ) y =           chunk.GetSizeY() + Position.y + 0 ;
 
             Position = new Vector2(x, y);
         }
