@@ -24,7 +24,6 @@ public sealed class Program{
 
     public IEntity CurrentEntity;
 
-    [STAThread]
     private static void Main() => new Program();
     public Program(){
         if(Instance == null)

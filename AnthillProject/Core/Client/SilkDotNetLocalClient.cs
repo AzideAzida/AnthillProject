@@ -168,6 +168,12 @@ public class SilkDotNetLocalClient : IClient{
 
             Canvas.Dispose();
             GrContext.Dispose();
+
+            //The following code is to make sure that the server thread stops before this one does.
+            var ServerIsntFinished = true;
+            Program.Instance.Server.OnServerFinish += () =>
+                ServerIsntFinished = false;
+            while(ServerIsntFinished);
         }
         public void PlayAudioFromIWaveProvider(IWaveProvider i){
             #if WINDOWS

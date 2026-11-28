@@ -9,6 +9,9 @@ namespace AnthillProject.Core.Server;
 //The server should create a loop where all simulation happens in Init(), with Task.Delay or other stuff so it doesn't simulate 1000 times per second.
 //The server should also simulate all loaded chunks.
 public interface IServer : IInitializable{
+    //This should be called right before the thread stops.
+    event Action OnServerFinish;
+
     //Should be invoked every tick.
     event Action OnServerTickFinish;
 

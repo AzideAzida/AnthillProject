@@ -31,6 +31,7 @@ public class SingleplayerLocalServer : IServer{
     private readonly int SaveID;
     private bool ContinueExecuting;
 
+    public event Action OnServerFinish;
     public event Action OnServerTickFinish;
 
     public SingleplayerLocalServer(int Save, ISaveManager saveManager, IChunkGenerator generator){
@@ -42,6 +43,7 @@ public class SingleplayerLocalServer : IServer{
         LoadedChunks = new Dictionary<Coordinates, IChunk>();
 
         OnServerTickFinish = () => {};
+        OnServerFinish = () => {};
     }
 
     public async void Init(){
@@ -110,6 +112,7 @@ public class SingleplayerLocalServer : IServer{
                 await Task.Delay(Delay);
             #endif
         }
+        OnServerFinish.Invoke();
     }
 
     public void SaveAndExit(){
