@@ -6,7 +6,40 @@ using AnthillProject.Core.Providing;
 using Silk.NET.Input;
 
 namespace AnthillProject.EntityBehaviours;
-public class Player : Entity{
+public sealed class Player : Entity, IDisposable{
+    private readonly static List<Player> Players;
+    static Player(){
+        Players = new List<Player>();
+        var client = Program.Instance.Client;
+        
+        client.OnKeyboardKeyDown += (keyboard, key) => {
+            foreach(var i in Players){
+                float x = i.CurrentSpeed.x;
+                float y = i.CurrentSpeed.y;
+
+                if(key == Key.D) x =  Speed;
+                if(key == Key.A) x = -Speed;
+                if(key == Key.W) y =  Speed;
+                if(key == Key.S) y = -Speed;
+
+                i.CurrentSpeed = new Vector2(x, y);
+            }
+        };
+
+        client.OnKeyboardKeyUp += (keyboard, key) => {
+            foreach(var i in Players){
+                float x = i.CurrentSpeed.x;
+                float y = i.CurrentSpeed.y;
+
+                if(key == Key.D) x = 0;
+                if(key == Key.A) x = 0;
+                if(key == Key.W) y = 0;
+                if(key == Key.S) y = 0;
+
+                i.CurrentSpeed = new Vector2(x, y);
+            }
+        };
+    }
     public const float Speed = 0.1f;
     private Vector2 CurrentSpeed;
 
@@ -38,34 +71,15 @@ public class Player : Entity{
         Load(new Coordinates(-1,-1)); Load(new Coordinates(0,-1)); Load(new Coordinates(1,-1));
     }
     public override void Init(){
-        //TODO: If the player becomes unloaded, the events that reference this instance will stop it from becoming garbage-collected.
-        //When I get to it, I'll make this implement IDisposable and do some stuff with that.
+        if(!Players.Contains(this))
+            Players.Add(this);
+    }
 
-        var client = Program.Instance.Client;
-
-        client.OnKeyboardKeyDown += (keyboard, key) => {
-            float x = CurrentSpeed.x;
-            float y = CurrentSpeed.y;
-
-            if(key == Key.D) x =  Speed;
-            if(key == Key.A) x = -Speed;
-            if(key == Key.W) y =  Speed;
-            if(key == Key.S) y = -Speed;
-            
-            CurrentSpeed = new Vector2(x, y);
-        };
-
-        client.OnKeyboardKeyUp += (keyboard, key) => {
-            float x = CurrentSpeed.x;
-            float y = CurrentSpeed.y;
-
-            if(key == Key.D) x = 0;
-            if(key == Key.A) x = 0;
-            if(key == Key.W) y = 0;
-            if(key == Key.S) y = 0;
-            
-            CurrentSpeed = new Vector2(x, y);
-        };
+    //Disposing the player will make it no longer react to client input.
+    public void Dispose(){
+        //For some reason this gets called multiple times when closing the window, but I honestly don't give a shit.
+        if(Players.Contains(this))
+            Players.Remove(this);
     }
 
     public override string GetProviderIdentifier() => ProviderInstance.GetIdentifier();
